@@ -3,53 +3,58 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Zeitarbeitsrechner – korrektes SV-Modell</title>
+  <title>Zeitarbeitsrechner – Brutto/Netto, Nachtschicht & AZK</title>
   <style>
-    :root { --pri:#0b2d43; --acc:#b5dd35; --bg:#f7f7f8; }
+    :root { --pri:#0b2d43; --acc:#b5dd35; --bg:#f4f6f8; }
     *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);margin:0;color:#111;line-height:1.45}
-    .wrap{max-width:980px;margin:40px auto;padding:20px}
-    .card{background:#fff;border:1px solid #eee;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.04);padding:24px}
-    h1{margin:0 0 6px 0;font-size:26px;font-weight:800;letter-spacing:.1px}
-    p.lead{margin:0 0 16px;color:#444}
-    label{font-weight:600;font-size:14px;margin-bottom:8px;display:block}
-    input,select{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:12px;outline:none;background:#fff}
-    input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(11,45,67,.12)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);margin:0;color:#0b2d43;line-height:1.5}
+    .wrap{max-width:1000px;margin:40px auto;padding:20px}
+    .card{background:#fff;border:1px solid #e7ecf0;border-radius:18px;box-shadow:0 6px 24px rgba(11,45,67,.08);padding:28px}
+    h1{margin:0 0 6px 0;font-size:28px;font-weight:900;color:#0b2d43;letter-spacing:.2px}
+    .subtitle{margin:0 0 18px;color:#0b2d43;opacity:.7;font-size:13px}
+    p.lead{margin:0 0 18px;color:#0b2d43;opacity:.85}
+    label{font-weight:700;font-size:14px;margin-bottom:8px;display:block;color:#0b2d43}
+    input,select{width:100%;padding:14px 14px;border:2px solid #cfd8df;border-radius:14px;outline:none;background:#fff;color:#0b2d43}
+    input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 4px rgba(11,45,67,.12)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
     .mt{margin-top:16px} .mt2{margin-top:24px}
-    .btn{display:inline-block;background:var(--pri);color:#fff;border:none;border-radius:12px;padding:12px 18px;font-weight:700;cursor:pointer}
-    .pill{display:inline-flex;align-items:center;gap:10px;background:#0b2d4310;border:1px solid #0b2d4320;border-radius:999px;padding:8px 12px}
-    .switch{position:relative;width:56px;height:30px;background:#e5e7eb;border-radius:999px;cursor:pointer;transition:background .2s}
-    .knob{position:absolute;top:3px;left:3px;width:24px;height:24px;background:#fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:left .2s}
-    .switch.on{background:var(--pri)} .switch.on .knob{left:29px}
-    .note{font-size:12px;color:#666}
-    .result{background:#fafafa;border:1px dashed #e5e7eb;border-radius:12px;padding:16px}
+    .btn{display:inline-block;background:var(--pri);color:#fff;border:none;border-radius:14px;padding:12px 18px;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(11,45,67,.2)}
+    .btn:focus{outline:none;box-shadow:0 0 0 4px rgba(11,45,67,.25)}
+    .pill{display:inline-flex;align-items:center;gap:10px;background:#0b2d430d;border:1px solid #0b2d4320;border-radius:999px;padding:10px 14px}
+    .switch{position:relative;width:58px;height:32px;background:#d5dde3;border-radius:999px;cursor:pointer;transition:background .2s, box-shadow .2s}
+    .knob{position:absolute;top:3px;left:3px;width:26px;height:26px;background:#fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:left .2s}
+    .switch.on{background:#0b2d43} .switch.on .knob{left:29px}
+    .note{font-size:12px;color:#0b2d43;opacity:.75}
+    .result{background:#fff;border:1px solid #e7ecf0;border-radius:16px;padding:16px;box-shadow:0 4px 16px rgba(11,45,67,.06)}
+    .section{border:1px dashed #dfe6eb;border-radius:14px;padding:12px 14px;background:#f9fbfc}
     .kv{display:flex;justify-content:space-between;padding:12px 14px;border-radius:10px}
     .kv + .kv{margin-top:8px}
-    .kv.head{background:#f3f4f6;font-weight:700}
-    .hl{color:var(--acc);font-weight:800}
+    .kv.head{background:#0b2d430a;color:#0b2d43;font-weight:800}
+    .hl{color:var(--acc);font-weight:900}
     .mono{font-variant-numeric:tabular-nums}
     .hidden{display:none}
-    .sub{font-size:12px;color:#555}
+    .tag{display:inline-block;background:#0b2d430d;border:1px solid #0b2d4320;border-radius:10px;padding:5px 8px;font-size:12px;margin-left:8px;color:#0b2d43}
+    .divider{height:1px;background:#e7ecf0;margin:14px 0}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
       <h1>Brutto/Netto Rechner</h1>
-      <p class="lead">Für Zeitarbeit: automatische AZK-Ermittlung ab <strong>151,67&nbsp;Std</strong> und Nachtschicht-Zulage <strong>+25&nbsp;%</strong> (anteilig, vor Abzügen). Bundesland setzt die richtige Kirchensteuer.</p>
+      <div class="subtitle">Untertitel von Stephanie Geiges</div>
+      <p class="lead">Für Zeitarbeit: automatisches Monats-Soll <strong>151,67&nbsp;Std</strong>, Nachtschicht-Zulage <strong>+25&nbsp;%</strong> (anteilig, vor Abzügen) und transparentes <strong>AZK</strong>.</p>
 
       <div class="row">
         <div>
-          <label for="gross">Monatliches Bruttogehalt (Basis, 151,67 Std)</label>
-          <input id="gross" type="number" inputmode="decimal" value="4000">
-          <div class="note mt">Vertragliches Monatsbrutto (Vollzeit).</div>
+          <label for="hourly">Stundenlohn (EUR/Std)</label>
+          <input id="hourly" type="number" inputmode="decimal" value="20">
+          <div class="note mt">Basis für die Monatsberechnung (151,67&nbsp;Std).</div>
         </div>
         <div>
           <label for="hoursActual">Gesamtstunden (Monat)</label>
           <input id="hoursActual" type="number" inputmode="decimal" value="160">
-          <div class="note mt">Alles über 151,67 Std wandert ins AZK.</div>
+          <div class="note mt">Alles über 151,67&nbsp;Std wandert ins AZK.</div>
         </div>
       </div>
 
@@ -60,26 +65,12 @@
             <span>Dauernachtschicht (100&nbsp;% Nachtstunden)</span>
             <div id="permanentToggle" class="switch" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
           </div>
-          <div class="note mt">Wenn aus, unten Nachtstunden angeben.</div>
+          <div class="note mt">Wenn aus, unten Nachtstunden eingeben – Zuschlag 25&nbsp;% anteilig.</div>
         </div>
         <div id="hoursNightBox">
           <label for="nightHours">Nachtstunden (Monat)</label>
-          <input id="nightHours" type="number" inputmode="decimal" value="160">
-        </div>
-      </div>
-
-      <div class="row mt">
-        <div>
-          <label>AZK – Auszahlung in diesem Monat?</label>
-          <div class="pill">
-            <span>AZK auszahlen</span>
-            <div id="azkPayoutToggle" class="switch" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
-          </div>
-        </div>
-        <div>
-          <label for="hourlyOverride">Stundenlohn (optional)</label>
-          <input id="hourlyOverride" type="number" inputmode="decimal" placeholder="leer = auto">
-          <div class="note mt">Auto: Basis-Brutto / 151,67.</div>
+          <input id="nightHours" type="number" inputmode="decimal" value="56">
+          <div class="note mt">z.&nbsp;B. ~1/3 der Zeit bei Drei-Schicht.</div>
         </div>
       </div>
 
@@ -87,45 +78,46 @@
         <div>
           <label for="state">Bundesland (Kirchensteuer)</label>
           <select id="state">
-            <option>Baden-Württemberg</option>
-            <option>Bayern</option>
-            <option selected>Nordrhein-Westfalen</option>
-            <option>Berlin</option><option>Brandenburg</option><option>Bremen</option><option>Hamburg</option>
-            <option>Hessen</option><option>Mecklenburg-Vorpommern</option><option>Niedersachsen</option>
-            <option>Rheinland-Pfalz</option><option>Saarland</option><option>Sachsen</option><option>Sachsen-Anhalt</option>
-            <option>Schleswig-Holstein</option><option>Thüringen</option>
+            <option>Baden-Württemberg</option><option>Bayern</option><option>Berlin</option><option>Brandenburg</option>
+            <option>Bremen</option><option>Hamburg</option><option>Hessen</option><option>Mecklenburg-Vorpommern</option>
+            <option>Niedersachsen</option><option>Nordrhein-Westfalen</option><option selected>Rheinland-Pfalz</option><option>Saarland</option>
+            <option>Sachsen</option><option>Sachsen-Anhalt</option><option>Schleswig-Holstein</option><option>Thüringen</option>
           </select>
-          <div class="note mt">8 % in BY/BW, sonst 9 %.</div>
+          <div class="note mt">Kirchensteuer: 8&nbsp;% in BY/BW, sonst 9&nbsp;%.</div>
         </div>
         <div>
           <label for="taxClass">Steuerklasse</label>
-          <select id="taxClass"><option>I</option><option>II</option><option selected>III</option><option>IV</option><option>V</option><option>VI</option></select>
+          <select id="taxClass">
+            <option value="1">I</option><option value="2">II</option><option value="3" selected>III</option>
+            <option value="4">IV</option><option value="5">V</option><option value="6">VI</option>
+          </select>
         </div>
         <div>
           <label for="health">Krankenkasse – Zusatzbeitrag (%)</label>
           <input id="health" type="number" step="0.1" value="1.6">
-          <div class="note mt">AN-KV = 7,3 % + Zusatz/2</div>
+          <div class="note mt">AN-KV = 7,3&nbsp;% + Zusatz/2</div>
         </div>
       </div>
 
       <div class="row mt">
         <div>
           <label for="children">Kinder (Anzahl)</label>
-          <input id="children" type="number" min="0" step="1" value="2">
+          <input id="children" type="number" min="0" step="1" value="0">
         </div>
         <div>
           <label for="childless">Kinder vorhanden?</label>
           <select id="childless"><option value="no" selected>ja (mit Kind)</option><option value="yes">nein (kinderlos)</option></select>
-          <div class="note mt">PV: 1,7 % mit Kind, 2,3 % ohne (Sachsen +0,35 pp).</div>
+          <div class="note mt">PV: 1,7&nbsp;% mit Kind, 2,3&nbsp;% ohne; Sachsen +0,35&nbsp;pp.</div>
         </div>
         <div>
-          <label for="job">Beruf / Einsatz</label>
-          <input id="job" value="Lagerhelfer">
+          <label for="job">Beruf / Einsatz (optional)</label>
+          <input id="job" placeholder="z. B. Lagerhelfer">
         </div>
       </div>
 
       <div class="mt2">
         <button id="calc" class="btn">Netto berechnen</button>
+        <span class="tag" id="churchTag">Kirchensteuer: 9 %</span>
       </div>
 
       <div id="out" class="mt2 result" aria-live="polite"></div>
@@ -135,18 +127,15 @@
 <script>
 (function(){
   const el = (id)=>document.getElementById(id);
-  const state = { permanent:false, azkPayout:false };
+  const state = { permanent:false };
+  const HOURS_TARGET = 151.67;
 
   function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
   function euro(n){ return (n<0?"− ":"") + Math.abs(n).toFixed(2) + " €"; }
-  const HOURS_TARGET = 151.67;
-
-  function churchPctByState(name){
-    return (name === "Bayern" || name === "Baden-Württemberg") ? 8 : 9;
-  }
+  function churchPctByState(name){ return (name === "Bayern" || name === "Baden-Württemberg") ? 8 : 9; }
 
   function socialInsurance(gross, zusatzPct, childless, stateName){
-    const kvRate = 0.073 + (zusatzPct/100)/2; // employee share
+    const kvRate = 0.073 + (zusatzPct/100)/2;
     const rvRate = 0.093;
     const avRate = 0.013;
     let pvRate = childless ? 0.023 : 0.017;
@@ -156,32 +145,31 @@
   }
 
   function wageTax(taxable, taxClass, children){
-    let base = (taxClass==="III") ? 0.08 : (taxClass==="V"||taxClass==="VI" ? 0.22 : 0.15);
+    let base = (taxClass==="3") ? 0.08 : (taxClass==="5"||taxClass==="6" ? 0.22 : 0.15);
     const relief = Math.min(0.02, 0.01*(+children||0));
     const rate = Math.max(0, base - relief);
     return { amount: taxable*rate, rate };
   }
 
   function calc(){
-    const baseGross = +el('gross').value || 0;
+    const hourly = +el('hourly').value || 0;
     const hoursActual = +el('hoursActual').value || 0;
     const nightHours = +el('nightHours').value || 0;
-    const hourlyOverride = +el('hourlyOverride').value || 0;
     const taxClass = el('taxClass').value;
     const children = +el('children').value || 0;
     const childless = el('childless').value === "yes";
     const stateName = el('state').value;
     const zusatz = +el('health').value || 1.6;
 
+    const baseGross = hourly * HOURS_TARGET;
+
     const extraHours = Math.max(0, hoursActual - HOURS_TARGET);
-    const hourly = hourlyOverride>0 ? hourlyOverride : (HOURS_TARGET>0 ? baseGross / HOURS_TARGET : 0);
     const azkValue = extraHours * hourly;
-    const azkPaid = state.azkPayout ? azkValue : 0;
 
     const fraction = state.permanent ? 1 : (hoursActual>0 ? clamp(nightHours/hoursActual,0,1) : 0);
     const nightAllowance = baseGross * 0.25 * fraction;
 
-    const grossEff = baseGross + nightAllowance + azkPaid;
+    const grossEff = baseGross + nightAllowance;
 
     const sv = socialInsurance(grossEff, zusatz, childless, stateName);
     const taxable = Math.max(0, grossEff - sv.total);
@@ -191,50 +179,56 @@
 
     const net = Math.max(0, grossEff - (sv.total + tax.amount + church));
 
-    const html = `
-      <div class="kv head"><span>Arbeitszeit</span><span class="mono">151,67 Std (AZK: +${extraHours.toFixed(2)} Std)</span></div>
-      <div class="kv"><span>AZK-Guthaben (brutto, separat)</span><span class="mono">+ ${euro(azkValue)}</span></div>
+    document.getElementById('churchTag').textContent = "Kirchensteuer: " + churchPct + " %";
 
-      <div class="kv head"><span>Brutto (Basis, 151,67 Std)</span><span class="mono">${euro(baseGross)}</span></div>
+    const protocol = `
+      <div class="section">
+        <div class="kv"><span>Monats-Soll</span><span class="mono">151,67 Std</span></div>
+        <div class="kv"><span>Tatsächliche Stunden</span><span class="mono">${hoursActual.toFixed(2)} Std</span></div>
+        <div class="kv"><span>AZK-Zuwachs</span><span class="mono">+ ${extraHours.toFixed(2)} Std (${euro(azkValue)})</span></div>
+      </div>
+    `;
+
+    const html = `
+      ${protocol}
+      <div class="divider"></div>
+      <div class="kv head"><span>Berechnungsbasis</span><span></span></div>
+      <div class="kv"><span>Stundenlohn</span><span class="mono">${euro(hourly)}</span></div>
+      <div class="kv"><span>Brutto (Basis · 151,67 Std)</span><span class="mono">${euro(baseGross)}</span></div>
       <div class="kv"><span>Nachtschicht-Zulage (25% · ${state.permanent ? "Dauernacht" : (fraction*100).toFixed(0)+"%"} der Stunden)</span><span class="mono">+ ${euro(nightAllowance)}</span></div>
-      <div class="kv"><span>AZK in diesem Monat</span><span class="mono">${state.azkPayout ? ("+ " + euro(azkPaid)) : "+ 0,00 €"}</span></div>
 
       <div class="kv head"><span>Brutto (auszahlungsrelevant)</span><span class="mono hl">${euro(grossEff)}</span></div>
 
       <div class="kv head"><span>Sozialabgaben (AN)</span><span class="mono">− ${euro(sv.total)}</span></div>
       <div class="kv"><span>Krankenkasse</span><span class="mono">− ${euro(sv.parts.kv)}</span></div>
-      <div class="sub">Rate: ${(sv.rates.kv*100).toFixed(2)} % (7,3 % + Zusatz/2)</div>
       <div class="kv"><span>Rentenversicherung</span><span class="mono">− ${euro(sv.parts.rv)}</span></div>
-      <div class="sub">Rate: ${(sv.rates.rv*100).toFixed(2)} %</div>
       <div class="kv"><span>Arbeitslosenversicherung</span><span class="mono">− ${euro(sv.parts.av)}</span></div>
-      <div class="sub">Rate: ${(sv.rates.av*100).toFixed(2)} %</div>
       <div class="kv"><span>Pflegeversicherung</span><span class="mono">− ${euro(sv.parts.pv)}</span></div>
-      <div class="sub">Rate: ${(sv.rates.pv*100).toFixed(2)} % ${stateName==="Sachsen"?"(inkl. +0,35 pp) ":""}${childless?"(kinderlos)":"(mit Kind)"}</div>
 
-      <div class="kv head"><span>Lohnsteuer (Demo)</span><span class="mono">− ${euro(tax.amount)} <span class="sub">(${(tax.rate*100).toFixed(1)} %)</span></span></div>
-      <div class="kv"><span>Kirchensteuer (${churchPct} %)</span><span class="mono">− ${euro(church)}</span></div>
+      <div class="kv head"><span>Lohnsteuer (Demo)</span><span class="mono">− ${euro(tax.amount)} <span class="tag">${(tax.rate*100).toFixed(1)} %</span></span></div>
+      <div class="kv"><span>Kirchensteuer</span><span class="mono">− ${euro(church)}</span></div>
 
       <div class="kv head"><span>Netto (geschätzt)</span><span class="mono hl">${euro(net)}</span></div>
-      <div class="note mt">Hinweis: AZK kann jederzeit über Abschläge ausbezahlt werden – je nach betrieblicher Regelung.</div>
+
+      <div class="note mt">Hinweis: Zeitguthaben (AZK) kann jederzeit über Abschläge ausbezahlt werden – je nach betrieblicher Regelung.</div>
     `;
     document.getElementById('out').innerHTML = html;
   }
 
-  function bindToggle(id, key, onChange){
+  function bindToggle(id, onChange){
     const t = document.getElementById(id);
-    function set(on){ t.classList.toggle('on', on); t.setAttribute('aria-checked', on?"true":"false"); }
-    t.addEventListener('click', ()=>{ state[key] = !state[key]; set(state[key]); onChange && onChange(); });
-    t.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); state[key]=!state[key]; set(state[key]); onChange && onChange(); } });
-    set(state[key]);
+    let on = false;
+    function set(v){ on=v; t.classList.toggle('on', on); t.setAttribute('aria-checked', on?"true":"false"); onChange(on); }
+    t.addEventListener('click', ()=> set(!on));
+    t.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); set(!on); }});
+    set(false);
   }
-
-  bindToggle('permanentToggle','permanent', ()=>{
-    document.getElementById('hoursNightBox').classList.toggle('hidden', state.permanent);
+  bindToggle('permanentToggle', (isOn)=>{
+    document.getElementById('hoursNightBox').classList.toggle('hidden', isOn);
     calc();
   });
-  bindToggle('azkPayoutToggle','azkPayout', calc);
 
-  ['gross','hoursActual','nightHours','hourlyOverride','taxClass','children','childless','state','health']
+  ['hourly','hoursActual','nightHours','taxClass','children','childless','state','health']
     .forEach(id=>{
       const node = document.getElementById(id);
       node.addEventListener('input', calc);
