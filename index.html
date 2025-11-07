@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Brutto/Netto Rechner – mit NACHTSCHICHT 25%</title>
+  <style>
+    :root { --pri:#0b2d43; --acc:#b5dd35; --bg:#f7f7f8; }
+    *{box-sizing:border-box} body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);margin:0;color:#111}
+    .wrap{max-width:880px;margin:40px auto;padding:20px}
+    .card{background:#fff;border:1px solid #eee;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.04);padding:24px}
+    h1{margin:0 0 8px 0;font-size:24px} p.lead{margin:0 0 20px;color:#555}
+    label{font-weight:600;font-size:14px;margin-bottom:8px;display:block}
+    input,select{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:12px;outline:none}
+    input:focus,select:focus{border-color:var(--pri)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+    .mt{margin-top:16px} .mt2{margin-top:24px}
+    .btn{display:inline-block;background:var(--pri);color:#fff;border:none;border-radius:12px;padding:12px 18px;font-weight:700;cursor:pointer}
+    .pill{display:inline-flex;align-items:center;gap:10px;background:#0b2d4312;border:1px solid #0b2d4320;border-radius:999px;padding:8px 12px}
+    .switch{position:relative;width:56px;height:30px;background:#e5e7eb;border-radius:999px;cursor:pointer;transition:background .2s}
+    .knob{position:absolute;top:3px;left:3px;width:24px;height:24px;background:#fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:left .2s}
+    .switch.on{background:var(--pri)} .switch.on .knob{left:29px}
+    .flex{display:flex;align-items:center;gap:12px}
+    .justify{display:flex;justify-content:space-between;align-items:center}
+    .note{font-size:12px;color:#666}
+    .result{background:#fafafa;border:1px dashed #e5e7eb;border-radius:12px;padding:16px}
+    .kv{display:flex;justify-content:space-between;padding:10px 12px;border-radius:10px}
+    .kv + .kv{margin-top:8px}
+    .kv.head{background:#f3f4f6;font-weight:700}
+    .hl{color:var(--acc);font-weight:800}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Brutto/Netto Rechner</h1>
+      <p class="lead">Mit <strong>NACHTSCHICHT</strong> Zuschlag: <strong>+25&nbsp;%</strong> aufs Basis-Brutto (vor Abzügen).</p>
+
+      <div class="row mt">
+        <div>
+          <label for="gross">Monatliches Bruttogehalt (Basis)</label>
+          <input id="gross" type="number" inputmode="decimal" placeholder="z. B. 3000" value="3000">
+          <div class="note mt">Basis-Brutto, <em>ohne</em> Zuschläge.</div>
+        </div>
+
+        <div>
+          <label>Schichtzulage</label>
+          <div class="justify pill">
+            <span>NACHTSCHICHT (+25&nbsp;%)</span>
+            <div id="nightToggle" class="switch" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
+          </div>
+          <div class="note mt">Wird <strong>vor</strong> der Berechnung als Zuschlag aufs Brutto addiert.</div>
+        </div>
+      </div>
+
+      <div class="row3 mt2">
+        <div>
+          <label for="taxClass">Steuerklasse</label>
+          <select id="taxClass">
+            <option value="1">I</option>
+            <option value="2">II</option>
+            <option value="3">III</option>
+            <option value="4" selected>IV</option>
+            <option value="5">V</option>
+            <option value="6">VI</option>
+          </select>
+        </div>
+        <div>
+          <label for="church">Kirchensteuer</label>
+          <select id="church">
+            <option value="0">nein</option>
+            <option value="8">8 %</option>
+            <option value="9" selected>9 %</option>
+          </select>
+        </div>
+        <div>
+          <label for="state">Bundesland</label>
+          <select id="state">
+            <option>NRW</option>
+            <option selected>Bayern</option>
+            <option>Berlin</option>
+            <option>Hamburg</option>
+            <option>Hessen</option>
+            <option>Niedersachsen</option>
+            <option>Sachsen</option>
+            <option>Thüringen</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt2">
+        <button id="calc" class="btn">Netto berechnen</button>
+      </div>
+
+      <div id="out" class="mt2 result" aria-live="polite"></div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const el = (id)=>document.getElementById(id);
+
+  const state = {
+    night:false
+  };
+
+  // very simplified deduction model (placeholder): flat 20% social + wage tax via simple bands
+  function socialInsurance(gross){
+    const sv = gross * 0.2; // placeholder rate for demo
+    return { total: sv, details: { sv: sv } };
+  }
+
+  function wageTax(taxable, taxClass){
+    // toy model for demo only – replace with your existing logic
+    let rate = 0.0;
+    if (taxClass === "3") rate = 0.08;
+    else if (taxClass === "5" || taxClass === "6") rate = 0.22;
+    else rate = 0.15;
+    return taxable * rate;
+  }
+
+  function churchTax(lohnsteuer, percent){
+    return lohnsteuer * (percent/100);
+  }
+
+  function calc(){
+    const baseGross = Number(el('gross').value || 0);
+    const taxClass = el('taxClass').value;
+    const churchPct = Number(el('church').value || 0);
+
+    // 1) NACHTSCHICHT 25% BEFORE deductions
+    const nightAllowance = state.night ? baseGross * 0.25 : 0;
+    const grossEffective = baseGross + nightAllowance;
+
+    // 2) Deductions on effective gross
+    const sv = socialInsurance(grossEffective);
+    const taxable = Math.max(0, grossEffective - sv.total);
+    const lohnsteuer = wageTax(taxable, taxClass);
+    const kirche = churchTax(lohnsteuer, churchPct);
+    const totalDed = sv.total + lohnsteuer + kirche;
+    const net = Math.max(0, grossEffective - totalDed);
+
+    // Output
+    el('out').innerHTML = `
+      <div class="kv head"><span>Brutto (Basis)</span><span>${baseGross.toFixed(2)} €</span></div>
+      <div class="kv"><span>${state.night ? "NACHTSCHICHT-Zulage (25%)" : "Schichtzulage"}</span><span>${nightAllowance.toFixed(2)} €</span></div>
+      <div class="kv head"><span>Brutto (effektiv)</span><span class="hl">${grossEffective.toFixed(2)} €</span></div>
+      <div class="kv"><span>Sozialabgaben (Demo)</span><span>− ${sv.total.toFixed(2)} €</span></div>
+      <div class="kv"><span>Lohnsteuer (Demo)</span><span>− ${lohnsteuer.toFixed(2)} €</span></div>
+      <div class="kv"><span>Kirchensteuer</span><span>− ${kirche.toFixed(2)} €</span></div>
+      <div class="kv head"><span>Netto (geschätzt)</span><span class="hl">${net.toFixed(2)} €</span></div>
+      <div class="note mt">Hinweis: Steuersatz/Sozialversicherung hier stark vereinfacht als Demo – in deiner echten App bitte die vorhandene Logik weiterverwenden und nur das 25%-Feature integrieren.</div>
+    `;
+  }
+
+  function toggleNight(on){
+    state.night = on;
+    const t = document.getElementById('nightToggle');
+    if (on){ t.classList.add('on'); t.setAttribute('aria-checked','true'); }
+    else { t.classList.remove('on'); t.setAttribute('aria-checked','false'); }
+  }
+
+  // UI handlers
+  const t = document.getElementById('nightToggle');
+  t.addEventListener('click', ()=>{ toggleNight(!state.night); calc(); });
+  t.addEventListener('keydown', (e)=>{
+    if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); toggleNight(!state.night); calc(); }
+  });
+
+  ['gross','taxClass','church','state'].forEach(id=>{
+    el(id).addEventListener('input', calc);
+    el(id).addEventListener('change', calc);
+  });
+  document.getElementById('calc').addEventListener('click', calc);
+
+  // initial render
+  calc();
+})();
+</script>
+</body>
+</html>
