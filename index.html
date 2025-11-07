@@ -4,38 +4,46 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Zeitarbeitsrechner – Brutto/Netto, Nachtschicht & AZK</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root { --pri:#0b2d43; --acc:#b5dd35; --bg:#f4f6f8; }
+    :root {
+      --pri:#0b2d42; /* Blau RGB 11,45,66 */
+      --acc:#b6de36; /* Grün 2 RGB 182,222,54 */
+      --acc2:#8aff14; /* Grün 1 CMYK 46,0,92,0 (approx) */
+      --bg:#edf2f0;  /* Weiß CMYK 7,5,6,0 (approx) */
+      --text:#0b2d42;
+    }
     *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);margin:0;color:#0b2d43;line-height:1.5}
+    body{font-family:"Nunito Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);margin:0;color:var(--text);line-height:1.55}
     .wrap{max-width:1000px;margin:40px auto;padding:20px}
-    .card{background:#fff;border:1px solid #e7ecf0;border-radius:18px;box-shadow:0 6px 24px rgba(11,45,67,.08);padding:28px}
-    h1{margin:0 0 6px 0;font-size:28px;font-weight:900;color:#0b2d43;letter-spacing:.2px}
-    .subtitle{margin:0 0 18px;color:#0b2d43;opacity:.7;font-size:13px}
-    p.lead{margin:0 0 18px;color:#0b2d43;opacity:.85}
-    label{font-weight:700;font-size:14px;margin-bottom:8px;display:block;color:#0b2d43}
-    input,select{width:100%;padding:14px 14px;border:2px solid #cfd8df;border-radius:14px;outline:none;background:#fff;color:#0b2d43}
-    input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 4px rgba(11,45,67,.12)}
+    .card{background:#fff;border:1px solid #dfe6ea;border-radius:20px;box-shadow:0 10px 28px rgba(11,45,66,.12);padding:28px}
+    h1{margin:0 0 6px 0;font:900 30px/1.2 "Poppins",sans-serif;color:var(--pri);letter-spacing:.2px}
+    .subtitle{margin:0 0 18px;color:var(--pri);opacity:.7;font:400 13px/1.4 "Nunito Sans",sans-serif}
+    p.lead{margin:0 0 18px;color:var(--pri);opacity:.9;font-weight:700}
+    label{font-weight:700;font-size:14px;margin-bottom:8px;display:block;color:var(--pri)}
+    input,select{width:100%;padding:14px 14px;border:2px solid #c9d3da;border-radius:14px;outline:none;background:#fff;color:var(--text)}
+    input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 4px rgba(11,45,66,.14)}
     .row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
     .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
     .mt{margin-top:16px} .mt2{margin-top:24px}
-    .btn{display:inline-block;background:var(--pri);color:#fff;border:none;border-radius:14px;padding:12px 18px;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(11,45,67,.2)}
-    .btn:focus{outline:none;box-shadow:0 0 0 4px rgba(11,45,67,.25)}
-    .pill{display:inline-flex;align-items:center;gap:10px;background:#0b2d430d;border:1px solid #0b2d4320;border-radius:999px;padding:10px 14px}
-    .switch{position:relative;width:58px;height:32px;background:#d5dde3;border-radius:999px;cursor:pointer;transition:background .2s, box-shadow .2s}
+    .btn{display:inline-block;background:var(--pri);color:#fff;border:none;border-radius:14px;padding:12px 18px;font-weight:800;cursor:pointer;box-shadow:0 6px 16px rgba(11,45,66,.22);transition:transform .05s ease}
+    .btn:active{transform:translateY(1px)}
+    .pill{display:inline-flex;align-items:center;gap:10px;background:#0b2d4214;border:1px solid #0b2d4228;border-radius:999px;padding:10px 14px}
+    .switch{position:relative;width:58px;height:32px;background:#c9d3da;border-radius:999px;cursor:pointer;transition:background .2s, box-shadow .2s}
     .knob{position:absolute;top:3px;left:3px;width:26px;height:26px;background:#fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:left .2s}
-    .switch.on{background:#0b2d43} .switch.on .knob{left:29px}
-    .note{font-size:12px;color:#0b2d43;opacity:.75}
-    .result{background:#fff;border:1px solid #e7ecf0;border-radius:16px;padding:16px;box-shadow:0 4px 16px rgba(11,45,67,.06)}
+    .switch.on{background:var(--pri)} .switch.on .knob{left:29px}
+    .note{font-size:12px;color:var(--pri);opacity:.75}
+    .result{background:#fff;border:1px solid #dfe6ea;border-radius:16px;padding:16px;box-shadow:0 8px 22px rgba(11,45,66,.08)}
     .section{border:1px dashed #dfe6eb;border-radius:14px;padding:12px 14px;background:#f9fbfc}
     .kv{display:flex;justify-content:space-between;padding:12px 14px;border-radius:10px}
     .kv + .kv{margin-top:8px}
-    .kv.head{background:#0b2d430a;color:#0b2d43;font-weight:800}
-    .hl{color:var(--acc);font-weight:900}
+    .kv.head{background:#0b2d4214;color:var(--pri);font-weight:800}
+    .hl{color:var(--acc);font-weight:900;font-family:"Nunito Sans",sans-serif}
     .mono{font-variant-numeric:tabular-nums}
     .hidden{display:none}
-    .tag{display:inline-block;background:#0b2d430d;border:1px solid #0b2d4320;border-radius:10px;padding:5px 8px;font-size:12px;margin-left:8px;color:#0b2d43}
-    .divider{height:1px;background:#e7ecf0;margin:14px 0}
+    .tag{display:inline-block;background:#0b2d4212;border:1px solid #0b2d4220;border-radius:10px;padding:5px 8px;font-size:12px;margin-left:8px;color:var(--pri);font-weight:700}
+    .divider{height:1px;background:#e1e8ed;margin:14px 0}
   </style>
 </head>
 <body>
@@ -43,7 +51,7 @@
     <div class="card">
       <h1>Brutto/Netto Rechner</h1>
       <div class="subtitle">Untertitel von Stephanie Geiges</div>
-      <p class="lead">Für Zeitarbeit: automatisches Monats-Soll <strong>151,67&nbsp;Std</strong>, Nachtschicht-Zulage <strong>+25&nbsp;%</strong> (anteilig, vor Abzügen) und transparentes <strong>AZK</strong>.</p>
+      <p class="lead">Start mit <strong>Stundenlohn</strong>. Monats-Soll <strong>151,67&nbsp;Std</strong>. Nachtschicht-Zulage <strong>+25&nbsp;%</strong> (anteilig, vor Abzügen) und transparentes <strong>AZK</strong>.</p>
 
       <div class="row">
         <div>
@@ -120,7 +128,7 @@
         <span class="tag" id="churchTag">Kirchensteuer: 9 %</span>
       </div>
 
-      <div id="out" class="mt2 result" aria-live="polite"></div>
+      <div id="out" class="mt2 result hidden" aria-live="polite"></div>
     </div>
   </div>
 
@@ -151,7 +159,7 @@
     return { amount: taxable*rate, rate };
   }
 
-  function calc(){
+  function compute(){
     const hourly = +el('hourly').value || 0;
     const hoursActual = +el('hoursActual').value || 0;
     const nightHours = +el('nightHours').value || 0;
@@ -162,13 +170,10 @@
     const zusatz = +el('health').value || 1.6;
 
     const baseGross = hourly * HOURS_TARGET;
-
     const extraHours = Math.max(0, hoursActual - HOURS_TARGET);
     const azkValue = extraHours * hourly;
-
     const fraction = state.permanent ? 1 : (hoursActual>0 ? clamp(nightHours/hoursActual,0,1) : 0);
     const nightAllowance = baseGross * 0.25 * fraction;
-
     const grossEff = baseGross + nightAllowance;
 
     const sv = socialInsurance(grossEff, zusatz, childless, stateName);
@@ -176,7 +181,6 @@
     const tax = wageTax(taxable, taxClass, children);
     const churchPct = churchPctByState(stateName);
     const church = tax.amount * (churchPct/100);
-
     const net = Math.max(0, grossEff - (sv.total + tax.amount + church));
 
     document.getElementById('churchTag').textContent = "Kirchensteuer: " + churchPct + " %";
@@ -212,7 +216,14 @@
 
       <div class="note mt">Hinweis: Zeitguthaben (AZK) kann jederzeit über Abschläge ausbezahlt werden – je nach betrieblicher Regelung.</div>
     `;
-    document.getElementById('out').innerHTML = html;
+    return html;
+  }
+
+  // Only show results after clicking the button
+  function reveal(){
+    const out = document.getElementById('out');
+    out.innerHTML = compute();
+    out.classList.remove('hidden');
   }
 
   function bindToggle(id, onChange){
@@ -224,19 +235,17 @@
     set(false);
   }
   bindToggle('permanentToggle', (isOn)=>{
+    state.permanent = isOn;
     document.getElementById('hoursNightBox').classList.toggle('hidden', isOn);
-    calc();
   });
 
-  ['hourly','hoursActual','nightHours','taxClass','children','childless','state','health']
-    .forEach(id=>{
-      const node = document.getElementById(id);
-      node.addEventListener('input', calc);
-      node.addEventListener('change', calc);
-    });
+  // No auto-calc on input; only update tag for church percent live
+  document.getElementById('state').addEventListener('change', ()=>{
+    const churchPct = churchPctByState(document.getElementById('state').value);
+    document.getElementById('churchTag').textContent = "Kirchensteuer: " + churchPct + " %";
+  });
 
-  document.getElementById('calc').addEventListener('click', calc);
-  calc();
+  document.getElementById('calc').addEventListener('click', reveal);
 })();
 </script>
 </body>
