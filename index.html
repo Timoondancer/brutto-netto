@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Brutto/Netto Rechner – NACHTSCHICHT (25%) mit Dauernachtschicht</title>
+  <title>TIMEPARTNER Brutto/Netto Rechner</title>
   <style>
     :root { --pri:#0b1f3a; --acc:#b5dd35; --bg:#f7f7f8; }
     *{box-sizing:border-box} body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);margin:0;color:#111}
@@ -169,7 +169,7 @@
     const percentTxt = (fraction*100).toFixed(0) + "%";
     el('out').innerHTML = `
       <div class="kv head"><span>Brutto (Basis)</span><span>${baseGross.toFixed(2)} €</span></div>
-      <div class="kv"><span>NACHTSCHICHT-Zulage (25% · ${state.permanent ? "Dauernacht" : percentTxt} der Stunden)</span><span>+ ${nightAllowance.toFixed(2)} €</span></div>
+      <div class="kv"><span>Nachtschicht-Zulage (25% · ${state.permanent ? "Dauernacht" : percentTxt} der Stunden)</span><span>+ ${nightAllowance.toFixed(2)} €</span></div>
       <div class="kv head"><span>Brutto (effektiv)</span><span class="hl">${grossEffective.toFixed(2)} €</span></div>
       <div class="kv"><span>Sozialabgaben (Demo)</span><span>− ${sv.total.toFixed(2)} €</span></div>
       <div class="kv"><span>Lohnsteuer (Demo)</span><span>− ${lohnsteuer.toFixed(2)} €</span></div>
