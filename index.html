@@ -5,77 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Zeitarbeits Brutto-Netto-Rechner mit AZK-Übersicht</title>
 
-  <!-- Brand fonts -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --blue:#0b2d42;         /* RGB 11,45,66 */
-      --green:#b6de36;        /* RGB 182,222,54 (Akzent) */
-      --green-aux:#8aff14;    /* aus CMYK 46,0,92,0 (sparsam) */
-      --white:#edf2f0;        /* aus CMYK 7,5,6,0 (näherungsweise) */
+      --blue:#0b2d42;      /* RGB 11,45,66 */
+      --green:#b6de36;     /* RGB 182,222,54 */
+      --white:#edf2f0;     /* CMYK 7,5,6,0 nähern */
       --text:#0b2d42;
       --muted:#6b7b88;
-      --ring: 3px;
+      --ring:3px;
     }
+
+    /* Base */
     *,*::before,*::after{box-sizing:border-box}
     html,body{height:100%}
+    html{ -webkit-text-size-adjust:100% }
     body{
-      margin:0;
-      background:var(--white);
-      color:var(--text);
-      font:400 16px/1.5 "Nunito Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin:0;background:var(--white);color:var(--text);
+      font:400 16px/1.55 "Nunito Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      hyphens:auto; overflow-wrap:anywhere;
     }
-    header h1{
-      margin:0;
-      font:900 30px/1.2 "Poppins", sans-serif;
-      letter-spacing:.2px;
-      color:var(--blue);
-    }
-    header p{margin:.5rem 0 0;color:var(--muted)}
-    main{display:block}
+
     .container{max-width:1000px;margin:32px auto;padding:0 20px}
-    .card{
-      background:#fff;
-      border:1px solid #dfe6ea;
-      border-radius:20px;
-      box-shadow:0 10px 28px rgba(11,45,66,.10);
-      padding:24px;
-    }
+    .card{background:#fff;border:1px solid #dfe6ea;border-radius:20px;box-shadow:0 10px 28px rgba(11,45,66,.10);padding:24px}
+
+    header h1{margin:0;font:900 30px/1.2 "Poppins",sans-serif;letter-spacing:.2px;color:var(--blue)}
+    header p{margin:.5rem 0 0;color:var(--muted)}
+
     fieldset{border:0;margin:0;padding:0}
-    legend{position:relative;left:-2px;margin:18px 0 8px;font:900 18px/1.1 "Poppins",sans-serif;color:var(--blue)}
+    legend{margin:18px 0 8px;font:900 18px/1.1 "Poppins",sans-serif;color:var(--blue)}
+
+    label{display:block;font-weight:700;margin:0 0 6px;color:var(--blue)}
+    input[type="number"],select{
+      width:100%;padding:12px 14px;border:2px solid #c9d3da;border-radius:14px;background:#fff;color:var(--text);outline:none;
+      min-height:48px; /* iOS Zoom vermeiden, touch-freundlich */
+    }
+    input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 var(--ring) rgba(11,45,66,.14)}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+
+    /* Grids */
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-    label{display:block;font-weight:700;margin:0 0 6px;color:var(--blue)}
-    input[type="number"], select{
-      width:100%;padding:12px 14px;border:2px solid #c9d3da;border-radius:14px;background:#fff;color:var(--text);outline:none;
-    }
-    input:focus,select:focus{border-color:var(--blue); box-shadow:0 0 0 var(--ring) rgba(11,45,66,.14)}
-    .hint{font-size:12px;color:var(--muted);margin-top:6px}
 
     /* CI Button */
     .btn{
-      -webkit-appearance:none; appearance:none;
-      display:inline-flex;align-items:center;justify-content:center;gap:10px;
-      padding:12px 18px;border-radius:14px;border:2px solid var(--green);
-      background:var(--blue); color:#fff; font:700 15px/1 "Nunito Sans",sans-serif;
-      cursor:pointer; transition:transform .05s ease, box-shadow .2s ease, background .2s ease;
+      appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:14px 18px;border-radius:14px;border:2px solid var(--green);
+      background:var(--blue);color:#fff;font:700 15px/1 "Nunito Sans",sans-serif;
+      cursor:pointer;transition:transform .05s,box-shadow .2s;background-position:center;
       box-shadow:0 6px 16px rgba(11,45,66,.22);
     }
     .btn:hover{box-shadow:0 8px 20px rgba(11,45,66,.26)}
     .btn:active{transform:translateY(1px)}
-    .btn:focus-visible{outline:none; box-shadow:0 0 0 var(--ring) rgba(182,222,54,.6), 0 6px 16px rgba(11,45,66,.22)}
+    .btn:focus-visible{outline:none;box-shadow:0 0 0 var(--ring) rgba(182,222,54,.6),0 6px 16px rgba(11,45,66,.22)}
 
+    /* Switch */
     .switch{display:inline-grid;grid-auto-flow:column;align-items:center;gap:10px}
-    .switch input{appearance:none;width:48px;height:28px;border-radius:999px;background:#c9d3da;position:relative;outline:none;border:0;cursor:pointer;transition:background .2s}
-    .switch input::after{content:"";position:absolute;inset:3px auto auto 3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:transform .2s}
+    .switch input{appearance:none;width:52px;height:30px;border-radius:999px;background:#c9d3da;position:relative;cursor:pointer;transition:background .2s}
+    .switch input::after{content:"";position:absolute;inset:4px auto auto 4px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:transform .2s}
     .switch input:checked{background:var(--blue)}
-    .switch input:checked::after{transform:translateX(20px)}
+    .switch input:checked::after{transform:translateX(22px)}
 
+    /* Ergebnis */
     .result{margin-top:18px;background:#fff;border:1px solid #dfe6ea;border-radius:16px;padding:16px;box-shadow:0 8px 22px rgba(11,45,66,.08)}
-    .row{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:10px}
+    .row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;min-width:0}
     .row + .row{margin-top:6px}
     .row.head{background:#0b2d4212;font-weight:800}
     .mono{font-variant-numeric:tabular-nums}
@@ -85,6 +82,20 @@
     details>summary{cursor:pointer;color:var(--blue);font-weight:700}
     .hidden{display:none}
     .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+    /* ===== Mobile (<= 640px) ===== */
+    @media (max-width:640px){
+      .container{padding:0 12px}
+      .card{padding:16px;border-radius:16px}
+      header h1{font-size:26px;line-height:1.2}
+      legend{font-size:16px;margin:14px 0 6px}
+      .grid-2,.grid-3{grid-template-columns:1fr;gap:12px}
+      .btn{width:100%;margin-top:6px}
+      .result{padding:12px}
+      .row{grid-template-columns:1fr auto;padding:8px 10px}
+      .hint{font-size:12px}
+      select, input{min-height:46px}
+    }
   </style>
 </head>
 <body>
@@ -145,7 +156,7 @@
                 <option>Niedersachsen</option><option selected>Nordrhein-Westfalen</option><option>Rheinland-Pfalz</option><option>Saarland</option>
                 <option>Sachsen</option><option>Sachsen-Anhalt</option><option>Schleswig-Holstein</option><option>Thüringen</option>
               </select>
-              <div id="churchHint" class="hint">Kirchensteuer: 8&nbsp;% in BY/BW, sonst 9&nbsp;% (falls kirchensteuerpflichtig).</div>
+              <div id="churchHint" class="hint">Kirchensteuer: 8&nbsp;% in BY/BW, sonst 9&nbsp;% (nur wenn kirchensteuerpflichtig).</div>
             </div>
             <div>
               <label for="taxClass">Steuerklasse</label>
@@ -155,13 +166,13 @@
               </select>
               <details>
                 <summary>Was bedeutet die Steuerklasse?</summary>
-                <div class="muted-note">Kurzinfo: I = ledig; II = Alleinerziehend; III/V = verheiratet (Kombination); IV = verheiratet (beide ähnlich); VI = Zweitjob. (Vereinfacht)</div>
+                <div class="muted-note">Kurzinfo: I = ledig; II = Alleinerziehend; III/V = verheiratet (Kombination); IV = verheiratet (beide ähnlich); VI = Zweitjob. (vereinfacht)</div>
               </details>
             </div>
             <div>
               <label for="health">Krankenkasse – Zusatzbeitrag (%)</label>
               <input id="health" name="health" type="number" step="0.1" value="1.6">
-              <div class="hint">AN-KV ≈ 7,3&nbsp;% + (Zusatz/2). Bitte im Zweifel auf der Kassenwebsite prüfen.</div>
+              <div class="hint">AN-KV ≈ 7,3&nbsp;% + (Zusatz/2). Bitte ggf. bei der Kasse prüfen.</div>
             </div>
           </div>
           <div class="grid-3" style="margin-top:16px">
@@ -194,7 +205,7 @@
       <h2 id="ergebnis" class="visually-hidden">Ergebnis</h2>
       <div id="out" class="result" aria-live="polite"></div>
       <p class="muted-note">
-        Hinweis: Die Berechnung ist eine vereinfachte Schätzung und ersetzt keine Lohnabrechnung. Sozialversicherungs- und Steuerwerte sind vereinfacht; betriebliche Regelungen (z.&nbsp;B. AZK-Auszahlung) können abweichen.
+        Hinweis: Die Berechnung ist eine vereinfachte Schätzung und ersetzt keine Lohnabrechnung. SV- und Steuerwerte sind vereinfacht; betriebliche Regelungen (z. B. AZK-Auszahlung) können abweichen.
       </p>
     </section>
   </main>
@@ -205,61 +216,55 @@
   (function(){
     const el = (id)=>document.getElementById(id);
     const HOURS_TARGET = 151.67;
-
-    const euro = (n)=> new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',minimumFractionDigits:2}).format(n);
+    const euro =(n)=> new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n);
     const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
     const churchPctByState=(s)=> (s==="Bayern"||s==="Baden-Württemberg")?8:9;
 
-    function socialInsurance(gross, zusatz, childless, state){
+    function socialInsurance(gross,zusatz,childless,state){
       const kvRate = 0.073 + (zusatz/100)/2;
       const rvRate = 0.093;
       const avRate = 0.013;
       let pvRate = childless ? 0.023 : 0.017;
-      if (state==="Sachsen") pvRate += 0.0035;
-
-      const kv = gross*kvRate, rv = gross*rvRate, av = gross*avRate, pv = gross*pvRate;
-      return { total: kv+rv+av+pv, parts:{kv,rv,av,pv}, rates:{kv:kvRate,rv:rvRate,av:avRate,pv:pvRate} };
+      if(state==="Sachsen") pvRate+=0.0035;
+      const kv=gross*kvRate, rv=gross*rvRate, av=gross*avRate, pv=gross*pvRate;
+      return { total:kv+rv+av+pv, parts:{kv,rv,av,pv}, rates:{kv:kvRate,rv:rvRate,av:avRate,pv:pvRate} };
     }
-
-    function wageTax(taxable, taxClass, children){
-      let base = (taxClass==="3")?0.08:((taxClass==="5"||taxClass==="6")?0.22:0.15);
-      const relief = Math.min(0.02, 0.01*(+children||0));
-      const rate = Math.max(0, base - relief);
-      return { amount: taxable*rate, rate };
+    function wageTax(taxable,taxClass,children){
+      let base=(taxClass==="3")?0.08:((taxClass==="5"||taxClass==="6")?0.22:0.15);
+      const relief=Math.min(0.02,0.01*(+children||0));
+      const rate=Math.max(0,base-relief);
+      return { amount:taxable*rate, rate };
     }
 
     function compute(){
-      const hourly = +el('hourly').value || 0;
-      const hoursActual = +el('hoursActual').value || 0;
-      const nightHours = +el('nightHours').value || 0;
-      const permanent = el('permanent').checked;
-      const state = el('state').value;
-      const taxClass = el('taxClass').value;
-      const health = +el('health').value || 1.6;
-      const children = +el('children').value || 0;
-      const childless = el('childless').value === "yes";
-      const churchOn = el('church').checked;
+      const hourly=+el('hourly').value||0;
+      const hoursActual=+el('hoursActual').value||0;
+      const nightHours=+el('nightHours').value||0;
+      const permanent=el('permanent').checked;
+      const state=el('state').value;
+      const taxClass=el('taxClass').value;
+      const health=+el('health').value||1.6;
+      const children=+el('children').value||0;
+      const childless=(el('childless').value==="yes");
+      const churchOn=el('church').checked;
 
-      const baseGross = hourly * HOURS_TARGET;
-      const extraHours = Math.max(0, hoursActual - HOURS_TARGET);
-      const azkValue = extraHours * hourly;
+      const baseGross=hourly*HOURS_TARGET;
+      const extraHours=Math.max(0,hoursActual-HOURS_TARGET);
+      const azkValue=extraHours*hourly;
 
-      const fraction = permanent ? 1 : (hoursActual>0 ? clamp(nightHours/hoursActual,0,1) : 0);
-      const nightAllowance = baseGross * 0.25 * fraction;
+      const fraction=permanent?1:(hoursActual>0?clamp(nightHours/hoursActual,0,1):0);
+      const nightAllowance=baseGross*0.25*fraction;
+      const gross=baseGross+nightAllowance;
 
-      const gross = baseGross + nightAllowance;
+      const sv=socialInsurance(gross,health,childless,state);
+      const taxable=Math.max(0,gross-sv.total);
+      const tax=wageTax(taxable,taxClass,children);
+      const churchPct=churchOn?churchPctByState(state):0;
+      const church=tax.amount*(churchPct/100);
+      const net=Math.max(0,gross-(sv.total+tax.amount+church));
 
-      const sv = socialInsurance(gross, health, childless, state);
-      const taxable = Math.max(0, gross - sv.total);
-      const tax = wageTax(taxable, taxClass, children);
-
-      const churchPct = churchOn ? churchPctByState(state) : 0;
-      const church = tax.amount * (churchPct/100);
-
-      const net = Math.max(0, gross - (sv.total + tax.amount + church));
-      const percentTxt = (fraction*100).toFixed(0) + "%";
-
-      const html = `
+      const percentTxt=(fraction*100).toFixed(0)+"%";
+      return `
         <div class="row head"><span>Monatsprotokoll</span><span></span></div>
         <div class="row"><span>Monats-Soll</span><span class="mono">151,67&nbsp;Std</span></div>
         <div class="row"><span>Tatsächliche Stunden</span><span class="mono">${hoursActual.toFixed(2)}&nbsp;Std</span></div>
@@ -268,7 +273,7 @@
         <div class="row head" style="margin-top:8px"><span>Berechnungsbasis</span><span></span></div>
         <div class="row"><span>Stundenlohn</span><span class="mono">${euro(hourly)}</span></div>
         <div class="row"><span>Brutto (Basis · 151,67 Std)</span><span class="mono">${euro(baseGross)}</span></div>
-        <div class="row"><span>Nachtschicht-Zulage (25% · ${permanent ? "Dauernacht" : percentTxt} der Stunden)</span><span class="mono">+ ${euro(nightAllowance)}</span></div>
+        <div class="row"><span>Nachtschicht-Zulage (25% · ${permanent?"Dauernacht":percentTxt} der Stunden)</span><span class="mono">+ ${euro(nightAllowance)}</span></div>
 
         <div class="row head"><span>Brutto (auszahlungsrelevant)</span><span class="mono hl">${euro(gross)}</span></div>
 
@@ -279,7 +284,7 @@
         <div class="row"><span>Pflegeversicherung</span><span class="mono">− ${euro(sv.parts.pv)}</span></div>
 
         <div class="row head"><span>Lohnsteuer (Demo)</span><span class="mono">− ${euro(tax.amount)} <span class="mono" style="font-weight:700">(${(tax.rate*100).toFixed(1)} %)</span></span></div>
-        <div class="row"><span>Kirchensteuer ${churchOn ? "(" + churchPct + "%)" : "(aus)"}</span><span class="mono">− ${euro(church)}</span></div>
+        <div class="row"><span>Kirchensteuer ${churchOn?"("+churchPct+"%)":"(aus)"}</span><span class="mono">− ${euro(church)}</span></div>
 
         <div class="row head"><span>Netto (geschätzt)</span><span class="mono hl">${euro(net)}</span></div>
 
@@ -292,18 +297,19 @@
           </div>
         </details>
       `;
-      return html;
     }
 
     function reveal(){
       document.getElementById('out').innerHTML = compute();
       document.getElementById('resultWrap').classList.remove('hidden');
+      // Scroll zum Ergebnis (mobil angenehm)
+      document.getElementById('resultWrap').scrollIntoView({behavior:'smooth',block:'start'});
     }
 
-    document.getElementById('permanent').addEventListener('change', (e)=>{
-      document.getElementById('nightBox').classList.toggle('hidden', e.target.checked);
+    document.getElementById('permanent').addEventListener('change',(e)=>{
+      document.getElementById('nightBox').classList.toggle('hidden',e.target.checked);
     });
-    document.getElementById('calc').addEventListener('click', reveal);
+    document.getElementById('calc').addEventListener('click',reveal);
   })();
   </script>
 </body>
