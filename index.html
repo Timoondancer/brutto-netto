@@ -12,89 +12,87 @@
 
   <style>
     :root{
-      --blue:#0b2d42;      /* RGB 11,45,66 */
-      --green:#b6de36;     /* RGB 182,222,54 */
-      --white:#edf2f0;     /* CMYK 7,5,6,0 nähern */
-      --text:#0b2d42;
-      --muted:#6b7b88;
-      --ring:3px;
+      --blue:#0b2d42; --green:#b6de36; --white:#edf2f0;
+      --text:#0b2d42; --muted:#6b7b88; --ring:3px;
     }
 
     /* Base */
     *,*::before,*::after{box-sizing:border-box}
     html,body{height:100%}
-    html{ -webkit-text-size-adjust:100% }
     body{
       margin:0;background:var(--white);color:var(--text);
-      font:400 16px/1.55 "Nunito Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      font:400 16px/1.6 "Nunito Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       hyphens:auto; overflow-wrap:anywhere;
     }
 
-    .container{max-width:1000px;margin:32px auto;padding:0 20px}
-    .card{background:#fff;border:1px solid #dfe6ea;border-radius:20px;box-shadow:0 10px 28px rgba(11,45,66,.10);padding:24px}
+    .container{max-width:1000px;margin:40px auto;padding:0 20px}
+    .card{background:#fff;border:1px solid #dfe6ea;border-radius:20px;box-shadow:0 10px 28px rgba(11,45,66,.10);padding:28px}
 
-    header h1{margin:0;font:900 30px/1.2 "Poppins",sans-serif;letter-spacing:.2px;color:var(--blue)}
-    header p{margin:.5rem 0 0;color:var(--muted)}
+    header h1{margin:0 0 6px;font:900 30px/1.2 "Poppins",sans-serif;color:var(--blue)}
+    header p{margin:0;color:var(--muted)}
 
-    fieldset{border:0;margin:0;padding:0}
-    legend{margin:18px 0 8px;font:900 18px/1.1 "Poppins",sans-serif;color:var(--blue)}
+    fieldset{border:0;margin:26px 0 0;padding:0}
+    legend{margin:0 0 12px;font:900 18px/1.2 "Poppins",sans-serif;color:var(--blue)}
 
     label{display:block;font-weight:700;margin:0 0 6px;color:var(--blue)}
     input[type="number"],select{
-      width:100%;padding:12px 14px;border:2px solid #c9d3da;border-radius:14px;background:#fff;color:var(--text);outline:none;
-      min-height:48px; /* iOS Zoom vermeiden, touch-freundlich */
+      width:100%;padding:12px 14px;border:2px solid #c9d3da;border-radius:14px;background:#fff;color:var(--text);outline:none;min-height:48px;
     }
     input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 var(--ring) rgba(11,45,66,.14)}
     .hint{font-size:12px;color:var(--muted);margin-top:6px}
 
-    /* Grids */
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+    /* Grids with more spacing */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
 
     /* CI Button */
     .btn{
       appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;
       padding:14px 18px;border-radius:14px;border:2px solid var(--green);
       background:var(--blue);color:#fff;font:700 15px/1 "Nunito Sans",sans-serif;
-      cursor:pointer;transition:transform .05s,box-shadow .2s;background-position:center;
+      cursor:pointer;transition:transform .05s,box-shadow .2s;
       box-shadow:0 6px 16px rgba(11,45,66,.22);
     }
     .btn:hover{box-shadow:0 8px 20px rgba(11,45,66,.26)}
     .btn:active{transform:translateY(1px)}
     .btn:focus-visible{outline:none;box-shadow:0 0 0 var(--ring) rgba(182,222,54,.6),0 6px 16px rgba(11,45,66,.22)}
 
-    /* Switch */
+    /* Flacher Switch */
     .switch{display:inline-grid;grid-auto-flow:column;align-items:center;gap:10px}
-    .switch input{appearance:none;width:52px;height:30px;border-radius:999px;background:#c9d3da;position:relative;cursor:pointer;transition:background .2s}
-    .switch input::after{content:"";position:absolute;inset:4px auto auto 4px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:transform .2s}
+    .switch input{
+      appearance:none;width:48px;height:26px;border-radius:999px;background:#c9d3da;
+      position:relative;cursor:pointer;transition:background .2s;
+    }
+    .switch input::after{
+      content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+      background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:transform .2s;
+    }
     .switch input:checked{background:var(--blue)}
     .switch input:checked::after{transform:translateX(22px)}
 
     /* Ergebnis */
-    .result{margin-top:18px;background:#fff;border:1px solid #dfe6ea;border-radius:16px;padding:16px;box-shadow:0 8px 22px rgba(11,45,66,.08)}
-    .row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;min-width:0}
-    .row + .row{margin-top:6px}
+    .result{margin-top:20px;background:#fff;border:1px solid #dfe6ea;border-radius:16px;padding:18px;box-shadow:0 8px 22px rgba(11,45,66,.08)}
+    .row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:10px 12px;border-radius:10px}
+    .row + .row{margin-top:8px}
     .row.head{background:#0b2d4212;font-weight:800}
     .mono{font-variant-numeric:tabular-nums}
     .hl{color:var(--green);font-weight:900}
-    .muted-note{font-size:12px;color:var(--muted);margin-top:10px}
-    details{margin-top:8px}
+    .muted-note{font-size:12px;color:var(--muted);margin-top:12px}
+    details{margin-top:10px}
     details>summary{cursor:pointer;color:var(--blue);font-weight:700}
     .hidden{display:none}
     .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
 
-    /* ===== Mobile (<= 640px) ===== */
+    /* Mobile */
     @media (max-width:640px){
-      .container{padding:0 12px}
-      .card{padding:16px;border-radius:16px}
-      header h1{font-size:26px;line-height:1.2}
-      legend{font-size:16px;margin:14px 0 6px}
-      .grid-2,.grid-3{grid-template-columns:1fr;gap:12px}
-      .btn{width:100%;margin-top:6px}
-      .result{padding:12px}
-      .row{grid-template-columns:1fr auto;padding:8px 10px}
-      .hint{font-size:12px}
-      select, input{min-height:46px}
+      .container{padding:0 12px;margin:28px auto}
+      .card{padding:18px;border-radius:16px}
+      header h1{font-size:26px}
+      .grid-2,.grid-3{grid-template-columns:1fr;gap:14px}
+      .btn{width:100%;margin-top:8px}
+      .result{padding:14px}
+      .row{padding:9px 10px}
+      select,input{min-height:46px}
     }
   </style>
 </head>
@@ -147,6 +145,8 @@
 
         <fieldset>
           <legend>Steuern & Sozialversicherung</legend>
+
+          <!-- Bundesland -->
           <div class="grid-3">
             <div>
               <label for="state">Bundesland</label>
@@ -157,7 +157,14 @@
                 <option>Sachsen</option><option>Sachsen-Anhalt</option><option>Schleswig-Holstein</option><option>Thüringen</option>
               </select>
               <div id="churchHint" class="hint">Kirchensteuer: 8&nbsp;% in BY/BW, sonst 9&nbsp;% (nur wenn kirchensteuerpflichtig).</div>
+              <!-- Kirchensteuer-Switch direkt nach Bundesland -->
+              <div class="switch" style="margin-top:10px">
+                <input id="church" type="checkbox" role="switch" aria-checked="false" aria-labelledby="churchLbl">
+                <label id="churchLbl" for="church">Ich bin kirchensteuerpflichtig</label>
+              </div>
             </div>
+
+            <!-- Steuerklasse -->
             <div>
               <label for="taxClass">Steuerklasse</label>
               <select id="taxClass" name="taxClass">
@@ -169,21 +176,17 @@
                 <div class="muted-note">Kurzinfo: I = ledig; II = Alleinerziehend; III/V = verheiratet (Kombination); IV = verheiratet (beide ähnlich); VI = Zweitjob. (vereinfacht)</div>
               </details>
             </div>
+
+            <!-- Krankenkasse -->
             <div>
               <label for="health">Krankenkasse – Zusatzbeitrag (%)</label>
               <input id="health" name="health" type="number" step="0.1" value="1.6">
               <div class="hint">AN-KV ≈ 7,3&nbsp;% + (Zusatz/2). Bitte ggf. bei der Kasse prüfen.</div>
             </div>
           </div>
-          <div class="grid-3" style="margin-top:16px">
-            <div class="switch">
-              <input id="church" type="checkbox" role="switch" aria-checked="false" aria-labelledby="churchLbl">
-              <label id="churchLbl" for="church">Ich bin kirchensteuerpflichtig</label>
-            </div>
-            <div>
-              <label for="children">Kinder (Anzahl)</label>
-              <input id="children" name="children" type="number" min="0" step="1" value="0">
-            </div>
+
+          <!-- Kinder: erst vorhanden?, dann Anzahl -->
+          <div class="grid-3" style="margin-top:18px">
             <div>
               <label for="childless">Kinder vorhanden?</label>
               <select id="childless" name="childless">
@@ -192,10 +195,15 @@
               </select>
               <div class="hint">PV: 1,7&nbsp;% mit Kind, 2,3&nbsp;% kinderlos; Sachsen +0,35 pp (AN-Anteil).</div>
             </div>
+            <div>
+              <label for="children">Kinder (Anzahl)</label>
+              <input id="children" name="children" type="number" min="0" step="1" value="0">
+            </div>
+            <div aria-hidden="true"></div>
           </div>
         </fieldset>
 
-        <div style="margin-top:18px">
+        <div style="margin-top:22px">
           <button id="calc" type="button" class="btn">Netto berechnen</button>
         </div>
       </form>
@@ -302,7 +310,6 @@
     function reveal(){
       document.getElementById('out').innerHTML = compute();
       document.getElementById('resultWrap').classList.remove('hidden');
-      // Scroll zum Ergebnis (mobil angenehm)
       document.getElementById('resultWrap').scrollIntoView({behavior:'smooth',block:'start'});
     }
 
