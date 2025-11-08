@@ -2,50 +2,59 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <title>Zeitarbeits Brutto-Netto-Rechner mit AZK-Übersicht | TimePartner</title>
+  <meta name="description" content="Schnell und einfach: Zeitarbeits Brutto-Netto-Rechner mit AZK-Übersicht, Nachtschicht-Zuschlag (25 %), Kirchensteuer, Steuerklassen & Krankenkasse. In Sekunden dein Netto wissen.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Zeitarbeits Brutto-Netto-Rechner mit AZK-Übersicht</title>
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
 
-  <!-- Fonts -->
+  <!-- Canonical & Open Graph -->
+  <link rel="canonical" href="CANONICAL_URL">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Zeitarbeits Brutto-Netto-Rechner mit AZK-Übersicht">
+  <meta property="og:description" content="In Sekunden dein Netto berechnen – inklusive AZK, Nachtschicht-Zuschlag, Steuerklasse & Kirchensteuer.">
+  <meta property="og:url" content="CANONICAL_URL">
+  <meta property="og:image" content="CANONICAL_URL/assets/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Brand fonts (performance-freundlich) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
 
+  <!-- Favicon hooks -->
+  <link rel="icon" href="assets/favicon.ico">
+
   <style>
     :root{
-      --blue:#0b2d42; --green:#b6de36; --white:#edf2f0;
-      --text:#0b2d42; --muted:#6b7b88; --ring:3px;
+      --blue:#0b2d42; --green:#b6de36; --bg:#edf2f0; --ink:#0b2d42; --muted:#6b7b88; --ring:3px;
     }
-
-    /* Base */
     *,*::before,*::after{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0;background:var(--white);color:var(--text);
+      margin:0;background:var(--bg);color:var(--ink);
       font:400 16px/1.6 "Nunito Sans",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      hyphens:auto; overflow-wrap:anywhere;
+      hyphens:auto;overflow-wrap:anywhere;
     }
-
-    .container{max-width:1000px;margin:40px auto;padding:0 20px}
-    .card{background:#fff;border:1px solid #dfe6ea;border-radius:20px;box-shadow:0 10px 28px rgba(11,45,66,.10);padding:28px}
-
-    header h1{margin:0 0 6px;font:900 30px/1.2 "Poppins",sans-serif;color:var(--blue)}
+    .container{max-width:1000px;margin:32px auto;padding:0 20px}
+    .card{background:#fff;border:1px solid #dfe6ea;border-radius:20px;box-shadow:0 10px 28px rgba(11,45,66,.10);padding:24px}
+    header[role="banner"] h1{margin:0 0 6px;font:900 30px/1.2 "Poppins",sans-serif;color:var(--blue)}
     header p{margin:0;color:var(--muted)}
 
-    fieldset{border:0;margin:26px 0 0;padding:0}
-    legend{margin:0 0 12px;font:900 18px/1.2 "Poppins",sans-serif;color:var(--blue)}
-
+    /* Inputs */
+    fieldset{border:0;margin:22px 0 0;padding:0}
+    legend{margin:0 0 10px;font:900 18px/1.2 "Poppins",sans-serif;color:var(--blue)}
     label{display:block;font-weight:700;margin:0 0 6px;color:var(--blue)}
-    input[type="number"],select{
-      width:100%;padding:12px 14px;border:2px solid #c9d3da;border-radius:14px;background:#fff;color:var(--text);outline:none;min-height:48px;
+    input[type="text"],input[type="number"],select{
+      width:100%;padding:12px 14px;border:2px solid #c9d3da;border-radius:14px;background:#fff;color:var(--ink);outline:none;min-height:48px;
+      transition:border-color .2s,box-shadow .2s;
     }
     input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 var(--ring) rgba(11,45,66,.14)}
     .hint{font-size:12px;color:var(--muted);margin-top:6px}
 
-    /* Grids */
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
     .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
 
-    /* CI Button */
+    /* CTA Button */
     .btn{
       appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;
       padding:16px 18px;border-radius:14px;border:2px solid var(--green);
@@ -57,210 +66,296 @@
     .btn:active{transform:translateY(1px)}
     .btn:focus-visible{outline:none;box-shadow:0 0 0 var(--ring) rgba(182,222,54,.6),0 6px 16px rgba(11,45,66,.22)}
 
-    /* Elongated green Switch (flacher, angenehmer) */
+    /* Elongated Switch */
     .switch{display:inline-grid;grid-auto-flow:column;align-items:center;gap:12px}
     .switch input{
       appearance:none;width:64px;height:28px;border-radius:32px;background:#d6dee4;
-      position:relative;cursor:pointer;transition:background .22s ease, box-shadow .22s;
-      border:1px solid #c7d0d7;
+      position:relative;cursor:pointer;transition:background .22s ease; border:1px solid #c7d0d7;
     }
     .switch input::after{
-      content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:12px;
-      background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.12);transition:transform .22s ease;
+      content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:12px;background:#fff;
+      box-shadow:0 1px 2px rgba(0,0,0,.12);transition:transform .22s ease;
     }
     .switch input:checked{background:var(--green);border-color:var(--green)}
     .switch input:checked::after{transform:translateX(36px)}
-    .switch label{cursor:pointer}
 
-    /* Ergebnis */
-    .result{margin-top:22px;background:#fff;border:1px solid #dfe6ea;border-radius:16px;padding:18px;box-shadow:0 8px 22px rgba(11,45,66,.08)}
+    /* Results */
+    .result{margin-top:20px;background:#fff;border:1px solid #dfe6ea;border-radius:18px;padding:18px;box-shadow:0 8px 22px rgba(11,45,66,.08)}
+    .headline{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 10px;border-radius:12px;background:#0b2d420d}
+    .headline .title{font:900 18px/1.1 "Poppins",sans-serif;color:var(--blue)}
+    .headline .net{font:900 28px/1 "Poppins",sans-serif;color:var(--green)}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{font:700 12px/1 "Nunito Sans";padding:8px 10px;border-radius:999px;border:1px solid #e3eaee;background:#f6faf7}
+    .chip.muted{background:#f5f7f9}
+    .bar{height:10px;background:#e6eef3;border-radius:999px;overflow:hidden;margin-top:12px}
+    .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#c8ee6a);width:0%}
+    .rows{margin-top:12px}
     .row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:10px 12px;border-radius:10px}
-    .row + .row{margin-top:8px}
+    .row+.row{margin-top:8px}
     .row.head{background:#0b2d4212;font-weight:800}
     .mono{font-variant-numeric:tabular-nums}
     .hl{color:var(--green);font-weight:900}
     .muted-note{font-size:12px;color:var(--muted);margin-top:12px}
-    details{margin-top:10px}
-    details>summary{cursor:pointer;color:var(--blue);font-weight:700}
+
+    footer{margin:22px 0 0;text-align:center;color:var(--muted)}
+    footer img{height:22px;vertical-align:middle}
+
     .hidden{display:none}
     .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
 
-    /* Mobile */
     @media (max-width:640px){
-      .container{padding:0 12px;margin:28px auto}
+      .container{padding:0 12px}
       .card{padding:18px;border-radius:16px}
-      header h1{font-size:26px}
-      .grid-2,.grid-3{grid-template-columns:1fr;gap:16px}
-      .btn{width:100%;margin-top:10px}
-      .result{padding:14px}
-      .row{padding:9px 10px}
-      select,input{min-height:46px}
-      .switch input{width:68px;height:30px}
-      .switch input::after{width:24px;height:24px;transform:none}
-      .switch input:checked::after{transform:translateX(38px)}
+      header[role="banner"] h1{font-size:26px}
+      .grid-2,.grid-3{grid-template-columns:1fr;gap:14px}
+      .btn{width:100%}
+      .headline .net{font-size:26px}
     }
   </style>
+
+  <!-- JSON-LD: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Zeitarbeits Brutto-Netto-Rechner mit AZK-Übersicht",
+    "applicationCategory":"BusinessApplication",
+    "operatingSystem":"All",
+    "url":"CANONICAL_URL",
+    "brand":{"@type":"Brand","name":"TimePartner"},
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},
+    "description":"Schnell zum Netto: Zeitarbeits Brutto-Netto-Rechner inkl. AZK, Nachtschicht-Zuschlag, Steuerklassen und Kirchensteuer."
+  }
+  </script>
+
+  <!-- JSON-LD: HowTo (kurze Schritt-Anleitung) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"HowTo",
+    "name":"Netto in Sekunden berechnen",
+    "description":"So nutzt du den Zeitarbeits Brutto-Netto-Rechner.",
+    "step":[
+      {"@type":"HowToStep","name":"Beruf eingeben","text":"Trage deine Tätigkeit ein und starte den Rechner."},
+      {"@type":"HowToStep","name":"Stundenlohn & Stunden","text":"Gib Stundenlohn und Monatsstunden ein."},
+      {"@type":"HowToStep","name":"Optionen wählen","text":"Nachtschicht, Bundesland, Steuerklasse, Kirchensteuer, Krankenkasse einstellen."},
+      {"@type":"HowToStep","name":"Netto berechnen","text":"Klicke auf „Netto berechnen“ und sieh dir das Ergebnis an."}
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Welche Steuerklassen werden berücksichtigt?","acceptedAnswer":{"@type":"Answer","text":"Die Klassen I–VI werden vereinfacht abgebildet, inklusive Alleinerziehenden-Entlastung (II). Für amtliche Genauigkeit empfehlen wir später die BMF-Formel."}},
+      {"@type":"Question","name":"Wie wird der Nachtschicht-Zuschlag berechnet?","acceptedAnswer":{"@type":"Answer","text":"Pauschal 25 % auf den anteiligen Grundlohn – wahlweise für alle oder nur die angegebenen Nachtstunden."}},
+      {"@type":"Question","name":"Was ist das AZK?","acceptedAnswer":{"@type":"Answer","text":"Überstunden über 151,67 Std/Monat gehen ins Arbeitszeitkonto (AZK). Die Übersicht zeigt Stunden und rechnerischen Wert."}}
+    ]
+  }
+  </script>
 </head>
 <body>
-  <main class="container">
+  <main class="container" itemscope itemtype="https://schema.org/Thing">
+    <!-- Above the fold: klarer Nutzen & Start -->
     <header class="card" role="banner">
-      <h1>Zeitarbeits Brutto-Netto-Rechner mit AZK-Übersicht</h1>
-      <p>Gib deinen <strong>Stundenlohn</strong> und die <strong>Monatsstunden</strong> ein. Nachtzuschlag & AZK werden automatisch berücksichtigt.</p>
+      <h1 itemprop="name">Zeitarbeits Brutto-Netto-Rechner mit AZK-Übersicht</h1>
+      <p itemprop="description">Schnell, verständlich, kostenfrei: In wenigen Eingaben dein <strong>Netto</strong> berechnen – inkl. <strong>AZK</strong>, <strong>Nachtschicht-Zuschlag (25 %)</strong>, <strong>Steuerklasse</strong>, <strong>Kirchensteuer</strong> & <strong>Krankenkasse</strong>.</p>
     </header>
 
-    <section class="card" aria-labelledby="eingaben">
-      <h2 id="eingaben" class="visually-hidden">Eingaben</h2>
-      <form id="calcForm" novalidate>
-        <fieldset>
-          <legend>Basis</legend>
-          <div class="grid-2">
-            <div>
-              <label for="hourly">Stundenlohn (EUR/Std)</label>
-              <input id="hourly" name="hourly" type="number" inputmode="decimal" step="0.01" min="0" value="20" required aria-describedby="hourlyHint">
-              <div id="hourlyHint" class="hint">Monatsbrutto basiert auf 151,67&nbsp;Std.</div>
-            </div>
-            <div>
-              <label for="hoursActual">Gesamtstunden (Monat)</label>
-              <input id="hoursActual" name="hoursActual" type="number" inputmode="decimal" step="0.01" min="0" value="160" aria-describedby="hoursHint">
-              <div id="hoursHint" class="hint">Alles über 151,67&nbsp;Std geht ins AZK.</div>
-            </div>
-          </div>
-        </fieldset>
+    <!-- 1) Onboarding: Beruf -->
+    <section id="intro" class="card" aria-labelledby="introTitle">
+      <h2 id="introTitle">Los geht’s – dein Beruf</h2>
+      <div class="grid-2" style="margin-top:8px">
+        <div>
+          <label for="job">Beruf / Tätigkeit</label>
+          <input id="job" type="text" placeholder="z. B. Lagerhelfer, Produktionsmitarbeiter, Pflegekraft" required>
+          <p class="hint">Nur zur Verbesserung des Rechners. Keine personenbezogenen Daten.</p>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <button id="startBtn" class="btn" type="button">Rechner starten</button>
+      </div>
+    </section>
 
-        <fieldset>
-          <legend>Nachtschicht</legend>
-          <div class="grid-2">
-            <div class="switch">
-              <input id="permanent" type="checkbox" role="switch" aria-checked="false" aria-labelledby="permLbl">
-              <label id="permLbl" for="permanent">Dauernachtschicht (100&nbsp;% Nachtstunden)</label>
+    <!-- 2) Rechner -->
+    <section id="tool" class="hidden" aria-label="Brutto-Netto-Rechner">
+      <section class="card" aria-labelledby="eingaben">
+        <h2 id="eingaben">Eingaben</h2>
+        <form id="calcForm" novalidate>
+          <fieldset>
+            <legend>Basis</legend>
+            <div class="grid-2">
+              <div>
+                <label for="hourly">Stundenlohn (EUR/Std)</label>
+                <input id="hourly" name="hourly" type="number" inputmode="decimal" step="0.01" min="0" value="20" required aria-describedby="hourlyHint">
+                <div id="hourlyHint" class="hint">Monatsbrutto basiert auf 151,67&nbsp;Std.</div>
+              </div>
+              <div>
+                <label for="hoursActual">Gesamtstunden (Monat)</label>
+                <input id="hoursActual" name="hoursActual" type="number" inputmode="decimal" step="0.01" min="0" value="160" aria-describedby="hoursHint">
+                <div id="hoursHint" class="hint">Alles über 151,67&nbsp;Std geht ins AZK.</div>
+              </div>
             </div>
-            <div id="nightBox">
-              <label for="nightHours">Nachtstunden (Monat)</label>
-              <input id="nightHours" name="nightHours" type="number" inputmode="decimal" step="0.01" min="0" value="56" aria-describedby="nightHint">
-              <div id="nightHint" class="hint">Wenn keine Dauernacht: anteilige Nachtstunden für 25&nbsp;% Zuschlag.</div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Nachtschicht</legend>
+            <div class="grid-2">
+              <div class="switch">
+                <input id="permanent" type="checkbox" role="switch" aria-checked="false" aria-labelledby="permLbl">
+                <label id="permLbl" for="permanent">Dauernachtschicht (100&nbsp;% Nachtstunden)</label>
+              </div>
+              <div id="nightBox">
+                <label for="nightHours">Nachtstunden (Monat)</label>
+                <input id="nightHours" name="nightHours" type="number" inputmode="decimal" step="0.01" min="0" value="56" aria-describedby="nightHint">
+                <div id="nightHint" class="hint">Wenn keine Dauernacht: anteilige Nachtstunden für 25&nbsp;% Zuschlag.</div>
+              </div>
             </div>
-          </div>
-        </fieldset>
+          </fieldset>
 
-        <fieldset>
-          <legend>Steuern & Sozialversicherung</legend>
-
-          <div class="grid-3">
-            <div>
-              <label for="state">Bundesland</label>
-              <select id="state" name="state" aria-describedby="churchHint">
-                <option>Baden-Württemberg</option><option>Bayern</option><option>Berlin</option><option>Brandenburg</option>
-                <option>Bremen</option><option>Hamburg</option><option>Hessen</option><option>Mecklenburg-Vorpommern</option>
-                <option>Niedersachsen</option><option selected>Nordrhein-Westfalen</option><option>Rheinland-Pfalz</option><option>Saarland</option>
-                <option>Sachsen</option><option>Sachsen-Anhalt</option><option>Schleswig-Holstein</option><option>Thüringen</option>
-              </select>
-              <div id="churchHint" class="hint">Kirchensteuer: 8&nbsp;% in BY/BW, sonst 9&nbsp;% (nur wenn kirchensteuerpflichtig).</div>
-              <div class="switch" style="margin-top:10px">
-                <input id="church" type="checkbox" role="switch" aria-checked="false" aria-labelledby="churchLbl">
-                <label id="churchLbl" for="church">Ich bin kirchensteuerpflichtig</label>
+          <fieldset>
+            <legend>Steuern & Sozialversicherung</legend>
+            <div class="grid-3">
+              <div>
+                <label for="state">Bundesland</label>
+                <select id="state" name="state" aria-describedby="churchHint">
+                  <option>Baden-Württemberg</option><option>Bayern</option><option>Berlin</option><option>Brandenburg</option>
+                  <option>Bremen</option><option>Hamburg</option><option>Hessen</option><option>Mecklenburg-Vorpommern</option>
+                  <option>Niedersachsen</option><option selected>Nordrhein-Westfalen</option><option>Rheinland-Pfalz</option><option>Saarland</option>
+                  <option>Sachsen</option><option>Sachsen-Anhalt</option><option>Schleswig-Holstein</option><option>Thüringen</option>
+                </select>
+                <div id="churchHint" class="hint">Kirchensteuer: 8&nbsp;% in BY/BW, sonst 9&nbsp;% (nur wenn kirchensteuerpflichtig).</div>
+                <div class="switch" style="margin-top:10px">
+                  <input id="church" type="checkbox" role="switch" aria-checked="false" aria-labelledby="churchLbl">
+                  <label id="churchLbl" for="church">Ich bin kirchensteuerpflichtig</label>
+                </div>
+              </div>
+              <div>
+                <label for="taxClass">Steuerklasse</label>
+                <select id="taxClass" name="taxClass">
+                  <option value="1">I</option><option value="2">II</option><option value="3" selected>III</option>
+                  <option value="4">IV</option><option value="5">V</option><option value="6">VI</option>
+                </select>
+                <div class="hint">III niedrig, V hoch, I/IV mittel, II etwas günstiger, VI sehr hoch. (vereinfacht)</div>
+              </div>
+              <div>
+                <label for="health">Krankenkasse – Zusatzbeitrag (%)</label>
+                <input id="health" name="health" type="number" step="0.1" value="1.6">
+                <div class="hint">AN-KV ≈ 7,3&nbsp;% + (Zusatz/2).</div>
               </div>
             </div>
 
-            <div>
-              <label for="taxClass">Steuerklasse</label>
-              <select id="taxClass" name="taxClass">
-                <option value="1">I</option><option value="2">II</option><option value="3" selected>III</option>
-                <option value="4">IV</option><option value="5">V</option><option value="6">VI</option>
-              </select>
-              <details>
-                <summary>Was ändert die Steuerklasse?</summary>
-                <div class="muted-note">III niedrig, V hoch, I/IV mittel, II leicht günstiger als I, VI sehr hoch. (vereinfachte Schätzung)</div>
-              </details>
+            <div class="grid-3" style="margin-top:18px">
+              <div>
+                <label for="childless">Kinder vorhanden?</label>
+                <select id="childless" name="childless">
+                  <option value="no" selected>ja (mit Kind)</option>
+                  <option value="yes">nein (kinderlos)</option>
+                </select>
+                <div class="hint">PV: 1,7&nbsp;% mit Kind / 2,3&nbsp;% kinderlos; Sachsen +0,35 pp.</div>
+              </div>
+              <div>
+                <label for="children">Kinder (Anzahl)</label>
+                <input id="children" name="children" type="number" min="0" step="1" value="0">
+              </div>
+              <div aria-hidden="true"></div>
             </div>
+          </fieldset>
 
-            <div>
-              <label for="health">Krankenkasse – Zusatzbeitrag (%)</label>
-              <input id="health" name="health" type="number" step="0.1" value="1.6">
-              <div class="hint">AN-KV ≈ 7,3&nbsp;% + (Zusatz/2).</div>
-            </div>
+          <div style="margin-top:18px">
+            <button id="calc" type="button" class="btn">Netto berechnen</button>
           </div>
+        </form>
+      </section>
 
-          <div class="grid-3" style="margin-top:18px">
-            <div>
-              <label for="childless">Kinder vorhanden?</label>
-              <select id="childless" name="childless">
-                <option value="no" selected>ja (mit Kind)</option>
-                <option value="yes">nein (kinderlos)</option>
-              </select>
-              <div class="hint">PV: 1,7&nbsp;% mit Kind / 2,3&nbsp;% kinderlos; Sachsen +0,35 pp.</div>
-            </div>
-            <div>
-              <label for="children">Kinder (Anzahl)</label>
-              <input id="children" name="children" type="number" min="0" step="1" value="0">
-            </div>
-            <div aria-hidden="true"></div>
-          </div>
-        </fieldset>
+      <section id="resultWrap" class="card hidden" aria-labelledby="ergebnis" style="margin-top:12px">
+        <h2 id="ergebnis">Ergebnis</h2>
+        <div id="summary" class="result" aria-live="polite"></div>
 
-        <div style="margin-top:24px">
-          <button id="calc" type="button" class="btn">Netto berechnen</button>
-        </div>
-      </form>
+        <details>
+          <summary>Berechnung im Detail</summary>
+          <div id="details" class="rows"></div>
+        </details>
+
+        <p class="muted-note">Hinweis: Lohnsteuer & SV sind vereinfacht geschätzt und ersetzen keine Lohnabrechnung.</p>
+      </section>
     </section>
 
-    <section id="resultWrap" class="card hidden" aria-labelledby="ergebnis">
-      <h2 id="ergebnis" class="visually-hidden">Ergebnis</h2>
-      <div id="out" class="result" aria-live="polite"></div>
-      <p class="muted-note">
-        Hinweis: Lohnsteuer & SV sind hier vereinfacht geschätzt und ersetzen keine Lohnabrechnung.
+    <footer class="container" aria-label="Fußbereich">
+      <p>
+        <img src="assets/tp-logo.svg" alt="TimePartner Logo" onerror="this.style.display='none'">
       </p>
-    </section>
+      <p class="muted-note">TimePartner – Make Work Work.</p>
+    </footer>
   </main>
 
-  <noscript>Bitte JavaScript aktivieren, um den Rechner zu verwenden.</noscript>
+  <noscript>
+    <div class="container">
+      <div class="card">
+        <p><strong>Hinweis:</strong> Bitte JavaScript aktivieren, um den Rechner zu verwenden.</p>
+      </div>
+    </div>
+  </noscript>
 
-  <script>
+  <script defer>
   (function(){
-    const el = (id)=>document.getElementById(id);
+    const $ = (id)=>document.getElementById(id);
     const HOURS_TARGET = 151.67;
-    const euro =(n)=> new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n);
+    const euro = (n)=> new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n);
     const clamp=(v,min,max)=>Math.min(max,Math.max(min,v));
     const churchPctByState=(s)=> (s==="Bayern"||s==="Baden-Württemberg")?8:9;
 
-    /* SV (AN-Anteile, vereinfacht) */
+    // Intro -> Tool (Beruf)
+    $('startBtn').addEventListener('click', ()=>{
+      const job = $('job').value.trim();
+      if(!job){ $('job').focus(); return; }
+      localStorage.setItem('tp_job', job);
+      $('intro').classList.add('hidden');
+      $('tool').classList.remove('hidden');
+      // Fokus usability
+      $('hourly').focus();
+    });
+
+    // Sozialversicherung (vereinfacht)
     function socialInsurance(gross,zusatz,childless,state){
-      const kvRate = 0.073 + (zusatz/100)/2;
-      const rvRate = 0.093;
-      const avRate = 0.013;
-      let pvRate = childless ? 0.023 : 0.017;
-      if(state==="Sachsen") pvRate+=0.0035;
-      const kv=gross*kvRate, rv=gross*rvRate, av=gross*avRate, pv=gross*pvRate;
+      const kv = gross*(0.073 + (zusatz/100)/2);
+      const rv = gross*0.093;
+      const av = gross*0.013;
+      let pv = gross*(childless?0.023:0.017);
+      if(state==="Sachsen") pv += gross*0.0035;
       return { total:kv+rv+av+pv, parts:{kv,rv,av,pv} };
     }
-
-    /* Lohnsteuer: realistische, aber einfache Klasse->Rate-Schätzung + Kinderentlastung */
+    // Lohnsteuer (vereinfachte Klassen-Schätzung)
     function wageTax(taxable,taxClass,children){
-      const baseRateMap = { "1":0.16, "2":0.15, "3":0.08, "4":0.16, "5":0.24, "6":0.30 };
-      let rate = baseRateMap[taxClass] ?? 0.16;
-      const relief = Math.min(0.02, 0.01*(+children||0)); /* max -2 %-Punkte */
-      rate = Math.max(0, rate - relief);
+      const base = { "1":0.16,"2":0.15,"3":0.08,"4":0.16,"5":0.24,"6":0.30 }[taxClass] ?? 0.16;
+      const relief = Math.min(0.02, 0.01*(+children||0));
+      const rate = Math.max(0, base - relief);
       return { amount: taxable*rate, rate };
     }
 
     function compute(){
-      const hourly=+el('hourly').value||0;
-      const hoursActual=+el('hoursActual').value||0;
-      const nightHours=+el('nightHours').value||0;
-      const permanent=el('permanent').checked;
-      const state=el('state').value;
-      const taxClass=el('taxClass').value;
-      const health=+el('health').value||1.6;
-      const children=+el('children').value||0;
-      const childless=(el('childless').value==="yes");
-      const churchOn=el('church').checked;
+      const hourly=+$('hourly').value||0;
+      const hoursActual=+$('hoursActual').value||0;
+      const nightHours=+$('nightHours').value||0;
+      const permanent=$('permanent').checked;
+      const state=$('state').value;
+      const taxClass=$('taxClass').value;
+      const health=+$('health').value||1.6;
+      const children=+$('children').value||0;
+      const childless=($('childless').value==="yes");
+      const churchOn=$('church').checked;
 
       const baseGross=hourly*HOURS_TARGET;
       const extraHours=Math.max(0,hoursActual-HOURS_TARGET);
       const azkValue=extraHours*hourly;
+
       const fraction=permanent?1:(hoursActual>0?clamp(nightHours/hoursActual,0,1):0);
       const nightAllowance=baseGross*0.25*fraction;
-      const gross=baseGross+nightAllowance;
 
+      const gross=baseGross+nightAllowance;
       const sv=socialInsurance(gross,health,childless,state);
       const taxable=Math.max(0,gross-sv.total);
       const tax=wageTax(taxable,taxClass,children);
@@ -268,44 +363,63 @@
       const churchPct=churchOn?churchPctByState(state):0;
       const church=tax.amount*(churchPct/100);
 
-      const net=Math.max(0,gross-(sv.total+tax.amount+church));
-      const percentTxt=(fraction*100).toFixed(0)+"%";
+      const deductions = sv.total + tax.amount + church;
+      const net=Math.max(0,gross-deductions);
 
-      /* Kompakte, leicht lesbare Ausgabe */
-      return `
-        <div class="row head"><span>Dein Netto</span><span class="mono hl">${euro(net)}</span></div>
-        <div class="row"><span>Brutto (dieser Monat)</span><span class="mono">${euro(gross)}</span></div>
-        <div class="row"><span>Summe Abzüge</span><span class="mono">− ${euro(sv.total + tax.amount + church)}</span></div>
+      return { baseGross, nightAllowance, gross, sv, tax, church, churchPct, net, extraHours, azkValue, fraction };
+    }
 
-        <details style="margin-top:10px">
-          <summary>Details anzeigen</summary>
-          <div class="row head" style="margin-top:10px"><span>Grundlage</span><span></span></div>
-          <div class="row"><span>Stundenlohn × 151,67 Std</span><span class="mono">${euro(baseGross)}</span></div>
-          <div class="row"><span>Nachtzuschlag (25% · ${permanent?"Dauernacht":percentTxt})</span><span class="mono">+ ${euro(nightAllowance)}</span></div>
-          <div class="row"><span>AZK-Zuwachs</span><span class="mono">+ ${extraHours.toFixed(2)} Std (${euro(azkValue)})</span></div>
+    function animateNumber(el, target){
+      const start=0, dur=500, t0=performance.now();
+      function frame(t){ const p=Math.min(1,(t-t0)/dur); el.textContent=euro(start+(target-start)*p); if(p<1) requestAnimationFrame(frame); }
+      requestAnimationFrame(frame);
+    }
 
-          <div class="row head"><span>Sozialabgaben (AN)</span><span class="mono">− ${euro(sv.total)}</span></div>
-          <div class="row"><span>Krankenkasse</span><span class="mono">− ${euro(sv.parts.kv)}</span></div>
-          <div class="row"><span>Rentenversicherung</span><span class="mono">− ${euro(sv.parts.rv)}</span></div>
-          <div class="row"><span>Arbeitslosenversicherung</span><span class="mono">− ${euro(sv.parts.av)}</span></div>
-          <div class="row"><span>Pflegeversicherung</span><span class="mono">− ${euro(sv.parts.pv)}</span></div>
+    function render(){
+      const R = compute();
+      const pctNet = R.gross>0 ? Math.round((R.net/R.gross)*100) : 0;
 
-          <div class="row head"><span>Lohnsteuer (vereinfacht, Klasse ${taxClass})</span><span class="mono">− ${euro(tax.amount)}</span></div>
-          <div class="row"><span>Kirchensteuer ${churchOn?"("+churchPct+"%)":"(aus)"}</span><span class="mono">− ${euro(church)}</span></div>
-        </details>
+      $('summary').innerHTML = `
+        <div class="headline"><div class="title">Dein Netto</div><div class="net" id="netNumber">${euro(0)}</div></div>
+        <div class="chips">
+          <span class="chip">Brutto: <span class="mono">${euro(R.gross)}</span></span>
+          <span class="chip muted">Abzüge: <span class="mono">− ${euro(R.sv.total + R.tax.amount + R.church)}</span></span>
+        </div>
+        <div class="bar" aria-label="Netto-Anteil von Brutto"><i id="barFill" style="width:${pctNet}%"></i></div>
       `;
+      animateNumber(document.getElementById('netNumber'), R.net);
+
+      const percentTxt=(R.fraction*100).toFixed(0)+"%";
+      $('details').innerHTML = `
+        <div class="row head"><span>Grundlage</span><span></span></div>
+        <div class="row"><span>Stundenlohn × 151,67 Std</span><span class="mono">${euro(R.baseGross)}</span></div>
+        <div class="row"><span>Nachtzuschlag (25% · ${$('permanent').checked?'Dauernacht':percentTxt})</span><span class="mono">+ ${euro(R.nightAllowance)}</span></div>
+        <div class="row"><span>AZK-Zuwachs</span><span class="mono">+ ${($('hoursActual').value?Math.max(0,+$('hoursActual').value-151.67).toFixed(2):'0.00')} Std (${euro(R.azkValue)})</span></div>
+        <div class="row head"><span>Sozialabgaben (AN)</span><span class="mono">− ${euro(R.sv.total)}</span></div>
+        <div class="row"><span>Krankenkasse</span><span class="mono">− ${euro(R.sv.parts.kv)}</span></div>
+        <div class="row"><span>Rentenversicherung</span><span class="mono">− ${euro(R.sv.parts.rv)}</span></div>
+        <div class="row"><span>Arbeitslosenversicherung</span><span class="mono">− ${euro(R.sv.parts.av)}</span></div>
+        <div class="row"><span>Pflegeversicherung</span><span class="mono">− ${euro(R.sv.parts.pv)}</span></div>
+        <div class="row head"><span>Lohnsteuer (vereinfacht, Klasse ${$('taxClass').value})</span><span class="mono">− ${euro(R.tax.amount)}</span></div>
+        <div class="row"><span>Kirchensteuer ${$('church').checked?'('+R.churchPct+'%)':'(aus)'}</span><span class="mono">− ${euro(R.church)}</span></div>
+      `;
+
+      $('resultWrap').classList.remove('hidden');
+
+      // Nach der ersten Berechnung: Live-Update auf Eingaben (schnelleres Ergebnis, gutes UX-Signal)
+      if(!render._live){
+        ['hourly','hoursActual','nightHours','permanent','state','taxClass','health','children','childless','church']
+          .forEach(id => document.getElementById(id).addEventListener('input', ()=>requestAnimationFrame(render)));
+        render._live = true;
+      }
     }
 
-    function reveal(){
-      document.getElementById('out').innerHTML = compute();
-      document.getElementById('resultWrap').classList.remove('hidden');
-      document.getElementById('resultWrap').scrollIntoView({behavior:'smooth',block:'start'});
-    }
-
-    document.getElementById('permanent').addEventListener('change',(e)=>{
-      document.getElementById('nightBox').classList.toggle('hidden',e.target.checked);
+    // Night toggle zeigt/verbirgt Eingabe
+    $('permanent').addEventListener('change',(e)=>{
+      document.getElementById('nightBox').classList.toggle('hidden', e.target.checked);
     });
-    document.getElementById('calc').addEventListener('click',reveal);
+
+    $('calc').addEventListener('click', render);
   })();
   </script>
 </body>
