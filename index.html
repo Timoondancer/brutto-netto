@@ -23,7 +23,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;font:400 16px/1.6 "Nunito Sans",system-ui,sans-serif;color:#0b2d42}
 body{
-  background:var(--tp-bg) url("assets/img/hintergrund.jpg") center/cover fixed;
+  background:var(--tp-bg) url("assets/img/hintergrund.png") center/cover fixed; /* PNG verwendet */
   position:relative;
 }
 body::before{ /* leicht abdunkeln für Lesbarkeit */
@@ -124,12 +124,6 @@ input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(
 
 /* Utilities */
 .hidden{display:none}
-footer{color:#3f5a69;text-align:center;margin:26px 0}
-
-/* Motion-Respect */
-@media (prefers-reduced-motion: reduce){
-  .btn, .switch input::after { transition:none }
-}
 </style>
 </head>
 <body>
@@ -137,7 +131,6 @@ footer{color:#3f5a69;text-align:center;margin:26px 0}
     <!-- HERO -->
     <header class="card hero" aria-labelledby="title">
       <h1 id="title">Brutto-Netto-Rechner für Zeitarbeit</h1>
-      <p style="margin:.5rem 0 0;color:#e0edf4">Mit <strong>AZK</strong>, <strong>25&nbsp;% Nachtzuschlag</strong>, <strong>Steuerklasse</strong>, <strong>Kirchensteuer</strong> &amp; Krankenkasse.</p>
       <ul class="hero-bullets" aria-label="Highlights">
         <li>Schnell zum Netto</li><li>AZK transparent</li><li>Einfach & mobil</li>
       </ul>
@@ -259,8 +252,6 @@ footer{color:#3f5a69;text-align:center;margin:26px 0}
         <div style="margin-top:12px"><button id="recalc" class="btn btn-secondary" type="button">Neu berechnen</button></div>
       </aside>
     </section>
-
-    <footer>TimePartner – Make Work Work.</footer>
   </main>
 
 <script>
