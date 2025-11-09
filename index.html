@@ -1,106 +1,142 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Brutto-Netto-Rechner für Zeitarbeit (mit AZK & Nachtschicht) | TimePartner</title>
-  <meta name="description" content="Schneller Brutto-Netto-Rechner für Zeitarbeit mit AZK-Übersicht, 25 % Nachtzuschlag, Steuerklasse, Kirchensteuer & Krankenkasse.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Brutto-Netto-Rechner für Zeitarbeit (mit AZK & Nachtschicht) | TimePartner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --tp-blue:#0b2d42;        /* Primary Navy */
+  --tp-blue-2:#123a57;      /* Panel Navy */
+  --tp-green:#b6de36;       /* Accent */
+  --tp-bg:#edf2f0;          /* Page BG */
+  --tp-muted:#6f8a9b;       /* Muted text */
+  --radius:14px;
+}
 
-  <style>
-    :root{
-      --tp-blue:#0b2d42;
-      --tp-green:#b6de36;
-      --tp-bg:#edf2f0;
-      --tp-muted:#6b7b88;
-      --tp-white:#fff;
-      --tp-radius:14px;
-    }
+/* Base */
+*{box-sizing:border-box}
+html,body{margin:0;font:400 16px/1.6 "Nunito Sans",system-ui,sans-serif;color:#0b2d42}
+body{
+  background:var(--tp-bg) url("assets/img/hintergrund.jpg") center/cover fixed;
+  position:relative;
+}
+body::before{ /* dunkelt Bild leicht ab für bessere Lesbarkeit */
+  content:""; position:fixed; inset:0; z-index:-1;
+  background:rgba(6,22,33,.28);
+}
+.container{max-width:1200px;margin:32px auto;padding:0 20px}
 
-    body{
-      margin:0;
-      font:400 16px/1.6 "Nunito Sans",sans-serif;
-      color:var(--tp-blue);
-      background: var(--tp-bg) url('assets/img/hintergrund.jpg') center/cover no-repeat fixed;
-    }
+/* Cards / Panels */
+.card{border-radius:20px;box-shadow:0 10px 26px rgba(11,45,66,.16);overflow:hidden}
+.card.hero{background:linear-gradient(180deg,#0b2d42,#123a57);color:#fff;padding:28px;border:1px solid rgba(255,255,255,.08)}
+.card.panel{background:#fff;padding:20px;border:1px solid #dfe6ea}
+.card.result{background:#fff;padding:20px;border:1px solid #dfe6ea}
 
-    .container{max-width:1000px;margin:32px auto;padding:0 20px}
-    .card{background:rgba(255,255,255,0.95);border:1px solid #dfe6ea;border-radius:20px;box-shadow:0 10px 28px rgba(11,45,66,.1);padding:24px;backdrop-filter:blur(4px)}
+/* Headings */
+h1{font:900 clamp(26px,4.6vw,40px)/1.15 "Poppins",sans-serif;margin:0;color:#fff}
+h2{font:900 20px/1.2 "Poppins",sans-serif;margin:0 0 12px;color:var(--tp-blue)}
+.hero-bullets{display:flex;gap:8px;flex-wrap:wrap;list-style:none;margin:12px 0 0;padding:0}
+.hero-bullets li{color:#e8f3f8;font-weight:700;font-size:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:8px 10px;border-radius:999px}
 
-    header.hero h1{font:900 clamp(24px,5.5vw,34px)/1.18 "Poppins";margin:0 0 8px;text-wrap:balance}
-    header.hero .lede{margin:0 0 10px;color:var(--tp-muted)}
-    .hero-bullets{display:flex;flex-wrap:wrap;gap:8px;padding:0;list-style:none;margin:8px 0 0}
-    .hero-bullets li{font-weight:700;font-size:12px;padding:8px 10px;border:1px solid #e3eaee;border-radius:999px;background:#f6faf7}
+/* Form */
+fieldset{border:0;margin:18px 0 0;padding:0}
+legend{margin:0 0 8px;font:900 16px/1.2 "Poppins";color:var(--tp-blue)}
+label{display:block;font-weight:700;margin:0 0 6px;color:var(--tp-blue)}
 
-    fieldset{border:0;margin:22px 0 0;padding:0}
-    legend{margin:0 0 10px;font:900 18px/1.2 "Poppins"}
-    label{display:block;font-weight:700;margin:0 0 6px}
-    input,select{
-      width:100%;padding:12px 14px;border:2px solid #c9d3da;border-radius:var(--tp-radius);
-      background:#fff;color:var(--tp-blue);transition:border-color .2s,box-shadow .2s}
-    input:focus,select:focus{border-color:var(--tp-blue);box-shadow:0 0 0 3px rgba(11,45,66,.12)}
-    .hint{font-size:12px;color:var(--tp-muted);margin-top:6px}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+input,select{
+  width:100%; padding:12px 14px; border-radius:var(--radius);
+  background:#fff; color:var(--tp-blue);
+  border:2px solid #c9d3da; outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+input::placeholder{color:#a8b7c2}
+input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(182,222,54,.25)}
+.hint{font-size:12px;color:var(--tp-muted);margin-top:6px}
 
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:10px;
-      padding:16px 20px;font:700 16px/1 "Nunito Sans";
-      border-radius:var(--tp-radius);cursor:pointer;transition:.2s;
-    }
-    .btn-primary{background:var(--tp-blue);color:#fff;border:2px solid var(--tp-green)}
-    .btn-primary:hover{box-shadow:0 6px 14px rgba(11,45,66,.3)}
-    .btn-secondary{background:transparent;color:var(--tp-blue);border:2px solid var(--tp-green)}
-    .btn-secondary:hover{background:rgba(182,222,54,.12)}
+.grid-2{display:grid;grid-template-columns:1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:1fr;gap:14px}
 
-    /* Flacher Toggle */
-    .switch{display:inline-grid;grid-auto-flow:column;align-items:center;gap:12px}
-    .switch input{
-      appearance:none;width:44px;height:20px;border-radius:10px;background:#ccd5da;
-      position:relative;cursor:pointer;transition:background .2s,border-color .2s;border:1px solid #c7d0d7;
-    }
-    .switch input::after{
-      content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:8px;background:#fff;
-      box-shadow:0 0 2px rgba(0,0,0,.15);transition:transform .2s ease;
-    }
-    .switch input:checked{background:var(--tp-green);border-color:var(--tp-green)}
-    .switch input:checked::after{transform:translateX(24px)}
+/* Buttons – **keine** Dauer-Pressed-Optik */
+.btn{
+  appearance:none; display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding:15px 18px; font:700 16px/1 "Nunito Sans";
+  border-radius:var(--radius); cursor:pointer; user-select:none;
+  border:2px solid var(--tp-green); transition:transform .03s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+}
+.btn:focus-visible{outline:none; box-shadow:0 0 0 3px rgba(182,222,54,.45)}
+.btn:active{transform:translateY(1px)} /* nur kurzer Tap, kein „eingedrückt bleiben“ */
 
-    .result{margin-top:20px;background:#fff;border:1px solid #dfe6ea;border-radius:18px;padding:18px;box-shadow:0 8px 22px rgba(11,45,66,.08)}
-    .headline{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:8px 10px;border-radius:12px;background:#0b2d420d}
-    .headline .title{font:900 18px/1.1 "Poppins"} .headline .net{font:900 28px/1 "Poppins";color:var(--tp-green)}
-    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .chip{font:700 12px/1.2 "Nunito Sans";padding:8px 12px;border-radius:999px;border:1px solid #e3eaee;background:#f6faf7}
-    .bar{height:10px;background:#e4ecf1;border-radius:999px;overflow:hidden;margin-top:12px}
-    .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--tp-green),#cbf06e);width:0%}
-    .muted-note{font-size:12px;color:var(--tp-muted);margin-top:8px}
-    .hidden{display:none}
+.btn-primary{background:var(--tp-blue); color:#fff}
+.btn-primary:hover{box-shadow:0 8px 18px rgba(11,45,66,.35)}
+.btn-secondary{background:transparent; color:var(--tp-blue)}
+.btn-secondary:hover{background:rgba(182,222,54,.12)}
+@media (max-width:640px){.btn{width:100%}}
 
-    footer{text-align:center;margin-top:40px;color:var(--tp-muted);}
-    footer img{width:140px;margin-top:16px;opacity:.9}
-    @media(max-width:640px){.container{padding:0 12px}.card{padding:18px}}
-  </style>
+/* Toggle – flach & grün, ohne pressed-look */
+.switch{display:inline-grid;grid-auto-flow:column;align-items:center;gap:12px}
+.switch input{
+  appearance:none; width:44px; height:20px; border-radius:10px;
+  background:#b9c7d1; position:relative; cursor:pointer; border:1px solid #a9bac5;
+  transition:background .2s ease, border-color .2s ease;
+}
+.switch input::after{
+  content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:8px;
+  background:#fff; box-shadow:0 0 2px rgba(0,0,0,.25); transition:transform .2s ease;
+}
+.switch input:checked{background:var(--tp-green); border-color:var(--tp-green)}
+.switch input:checked::after{transform:translateX(24px)}
+
+/* Ergebnis */
+.result-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.result-head .net{font:900 28px/1 "Poppins"; color:var(--tp-green)}
+.bar{height:10px;background:#e4ecf1;border-radius:999px;overflow:hidden;margin:12px 0}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--tp-green),#d5f16a);width:0%}
+.note{font-size:12px;color:#4c5f6b}
+
+/* Desktop: Formular links / Ergebnis rechts sticky */
+@media (min-width:1040px){
+  .layout{display:grid;grid-template-columns:minmax(560px,1fr) 420px;gap:22px;align-items:start}
+  .sticky{position:sticky;top:22px}
+  .grid-2{grid-template-columns:1fr 1fr}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+}
+
+/* Utilities */
+.hidden{display:none}
+footer{color:#3f5a69;text-align:center;margin:26px 0}
+
+/* Motion-Respect */
+@media (prefers-reduced-motion: reduce){
+  .btn, .switch input::after { transition:none }
+}
+</style>
 </head>
 <body>
   <main class="container">
+    <!-- HERO -->
     <header class="card hero">
-      <h1>Brutto-Netto-Rechner für Zeitarbeit (mit AZK & Nachtschicht)</h1>
-      <p class="lede">Schnell und verständlich: In wenigen Eingaben dein <strong>Netto</strong> – mit <strong>AZK</strong>, <strong>25&nbsp;% Nachtzuschlag</strong>, <strong>Steuerklasse</strong>, <strong>Kirchensteuer</strong> &amp; <strong>Krankenkasse</strong>.</p>
-      <ul class="hero-bullets"><li>Stundenlohn &amp; Monatsstunden</li><li>AZK transparent</li><li>Schnell zum Netto</li></ul>
+      <h1>Brutto-Netto-Rechner für Zeitarbeit</h1>
+      <p style="margin:.5rem 0 0;color:#e0edf4">Mit <strong>AZK</strong>, <strong>25 % Nachtzuschlag</strong>, <strong>Steuerklasse</strong>, <strong>Kirchensteuer</strong> &amp; Krankenkasse.</p>
+      <ul class="hero-bullets"><li>Schnell zum Netto</li><li>AZK transparent</li><li>Einfach & mobil</li></ul>
     </header>
 
-    <section id="intro" class="card">
+    <!-- INTRO -->
+    <section id="intro" class="card panel" aria-label="Einstieg">
       <h2>Los geht’s – dein Beruf</h2>
       <label for="job">Beruf / Tätigkeit</label>
-      <input id="job" type="text" placeholder="z. B. Lagerhelfer, Produktionsmitarbeiter, Pflegekraft">
+      <input id="job" type="text" placeholder="z. B. Lagerhelfer, Produktionsmitarbeiter, Pflegekraft" />
       <p class="hint">Nur zur Verbesserung des Rechners. Keine personenbezogenen Daten.</p>
-      <button id="startBtn" class="btn btn-secondary" type="button">Rechner starten</button>
+      <div style="margin-top:12px"><button id="startBtn" class="btn btn-secondary" type="button">Rechner starten</button></div>
     </section>
 
-    <section id="tool" class="hidden">
-      <section class="card">
+    <!-- LAYOUT -->
+    <section id="tool" class="layout hidden" aria-label="Brutto-Netto-Rechner">
+      <!-- FORM -->
+      <section class="card panel">
         <h2>Eingaben</h2>
         <form id="calcForm" novalidate>
           <fieldset>
@@ -108,13 +144,13 @@
             <div class="grid-2">
               <div>
                 <label for="hourly">Stundenlohn (EUR/Std)</label>
-                <input id="hourly" type="number" step="0.01" value="15">
-                <div class="hint">Monatsbrutto basiert auf 151,67&nbsp;Std.</div>
+                <input id="hourly" type="number" step="0.01" min="0" value="15" />
+                <div class="hint">Monatsbrutto basiert auf 151,67 Std.</div>
               </div>
               <div>
                 <label for="hoursActual">Gesamtstunden (Monat)</label>
-                <input id="hoursActual" type="number" step="0.01" value="160">
-                <div class="hint">Alles über 151,67&nbsp;Std geht ins AZK.</div>
+                <input id="hoursActual" type="number" step="0.01" min="0" value="160" />
+                <div class="hint">Alles über 151,67 Std geht ins AZK.</div>
               </div>
             </div>
           </fieldset>
@@ -123,12 +159,13 @@
             <legend>Nachtschicht</legend>
             <div class="grid-2">
               <div class="switch">
-                <input id="permanent" type="checkbox">
-                <label for="permanent">Dauernachtschicht (100&nbsp;% Nachtstunden)</label>
+                <input id="permanent" type="checkbox" />
+                <label for="permanent">Dauernachtschicht (100 % Nachtstunden)</label>
               </div>
               <div id="nightBox">
                 <label for="nightHours">Nachtstunden (Monat)</label>
-                <input id="nightHours" type="number" step="0.01" value="20">
+                <input id="nightHours" type="number" step="0.01" value="20" />
+                <div class="hint">Bei „Dauernacht“ nicht erforderlich.</div>
               </div>
             </div>
           </fieldset>
@@ -146,7 +183,7 @@
                   <option>Schleswig-Holstein</option><option>Thüringen</option>
                 </select>
                 <div class="switch" style="margin-top:10px">
-                  <input id="church" type="checkbox">
+                  <input id="church" type="checkbox" />
                   <label for="church">Kirchensteuerpflichtig</label>
                 </div>
               </div>
@@ -156,14 +193,16 @@
                   <option value="1">I</option><option value="2">II</option><option value="3" selected>III</option>
                   <option value="4">IV</option><option value="5">V</option><option value="6">VI</option>
                 </select>
+                <div class="hint">III niedrig, V hoch, I/IV mittel, II etwas günstiger, VI sehr hoch.</div>
               </div>
               <div>
                 <label for="health">Krankenkasse – Zusatzbeitrag (%)</label>
-                <input id="health" type="number" step="0.1" value="1.6">
+                <input id="health" type="number" step="0.1" value="1.6" />
+                <div class="hint">AN-KV ≈ 7,3 % + (Zusatz/2).</div>
               </div>
             </div>
 
-            <div class="grid-3" style="margin-top:18px">
+            <div class="grid-3" style="margin-top:14px">
               <div>
                 <label for="childless">Kinder vorhanden?</label>
                 <select id="childless">
@@ -173,7 +212,7 @@
               </div>
               <div id="childrenWrapper">
                 <label for="children">Kinder (Anzahl)</label>
-                <input id="children" type="number" min="0" step="1" value="0">
+                <input id="children" type="number" min="0" step="1" value="0" />
               </div>
             </div>
           </fieldset>
@@ -182,42 +221,92 @@
         </form>
       </section>
 
-      <section id="resultWrap" class="card hidden">
+      <!-- RESULT -->
+      <aside id="resultWrap" class="card result sticky hidden" aria-live="polite">
         <h2>Ergebnis</h2>
-        <div id="summary" class="result"></div>
-        <details><summary>Berechnung im Detail</summary><div id="details" class="rows"></div></details>
-        <button id="recalc" class="btn btn-secondary" style="margin-top:14px">Neu berechnen</button>
-      </section>
+        <div class="result-head"><div>Dein Netto</div><div class="net" id="netOut">–</div></div>
+        <div class="bar" aria-label="Netto-Anteil von Brutto"><i id="barfill" style="width:0%"></i></div>
+        <p class="note">Diese Berechnung ist eine vereinfachte, realistische Netto-Schätzung für Zeitarbeit. Abweichungen von ca. ±5&nbsp;% sind möglich.</p>
+        <details style="margin-top:10px"><summary>Berechnung im Detail</summary><div id="details" style="margin-top:10px"></div></details>
+        <div style="margin-top:12px"><button id="recalc" class="btn btn-secondary" type="button">Neu berechnen</button></div>
+      </aside>
     </section>
 
-    <footer>
-      <p>TimePartner – Make Work Work.</p>
-      <img src="assets/img/tp-weiss.png" alt="TimePartner Logo weiß">
-    </footer>
+    <footer>TimePartner – Make Work Work.</footer>
   </main>
 
-  <script>
-    const $=id=>document.getElementById(id);
-    const HOURS=151.67;
-    const euro=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n);
-    const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
-    const churchPct=s=>(s==="Bayern"||s==="Baden-Württemberg")?8:9;
+<script>
+const $=id=>document.getElementById(id);
+const HOURS=151.67;
+const euro=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n);
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const churchPct=s=>(s==="Bayern"||s==="Baden-Württemberg")?8:9;
 
-    $('startBtn').onclick=()=>{const j=$('job').value.trim();if(!j)return $('job').focus();$('intro').classList.add('hidden');$('tool').classList.remove('hidden');};
-    $('permanent').onchange=e=>$('nightBox').classList.toggle('hidden',e.target.checked);
-    $('childless').addEventListener('change',e=>{$('childrenWrapper').style.display=e.target.value==='no'?'block':'none';});
+/* Start: Intro -> Tool */
+$('startBtn').onclick=()=>{const j=$('job').value.trim(); if(!j){$('job').focus();return;}
+  localStorage.tp_job=j; document.getElementById('intro').classList.add('hidden'); document.getElementById('tool').classList.remove('hidden'); $('hourly').focus();
+};
 
-    function sv(g,z,cl,s){const kv=g*(0.073+z/200),rv=g*0.093,av=g*0.013;let pv=g*(cl?0.023:0.017);if(s==="Sachsen")pv+=g*0.0035;return{t:kv+rv+av+pv,kv,rv,av,pv};}
-    function tax(t,c,k){const r={"1":.16,"2":.15,"3":.08,"4":.16,"5":.24,"6":.30}[c]??.16;const rel=Math.min(.02,.01*(+k||0));return{a:t*Math.max(0,r-rel),r};}
+/* UX-Logik */
+$('permanent').onchange=e=>{ document.getElementById('nightBox').classList.toggle('hidden',e.target.checked); };
+$('childless').addEventListener('change',e=>{ document.getElementById('childrenWrapper').style.display = e.target.value==='no' ? 'block' : 'none'; });
 
-    function calc(){
-      const h=+$('hourly').value||0,hs=+$('hoursActual').value||0,nh=+$('nightHours').value||0,p=$('permanent').checked,
-      s=$('state').value,c=$('taxClass').value,z=+$('health').value||1.6,k=+$('children').value||0,cl=$('childless').value==="yes",ch=$('church').checked;
-      const b=h*HOURS,ex=Math.max(0,hs-HOURS),azk=ex*h,f=p?1:(hs?clamp(nh/hs,0,1):0),n=b*.25*f,g=b+n,S=sv(g,z,cl,s),tx=tax(Math.max(0,g-S.t),c,k),cp=ch?churchPct(s):0,chs=tx.a*(cp/100),ded=S.t+tx.a+chs,net=g-ded,pct=Math.round(net/g*100);
-      $('summary').innerHTML=`<div class="headline"><div class="title">Dein Netto</div><div class="net">${euro(net)}</div></div><div class="chips"><span class="chip">Brutto: ${euro(g)}</span><span class="chip muted">Abzüge: − ${euro(ded)}</span></div><div class="bar"><i style="width:${pct}%"></i></div><p class="muted-note">Diese Berechnung ist eine vereinfachte, realistische Netto-Schätzung für Zeitarbeit. Abweichungen von ca. ±5&nbsp;% sind möglich.</p>`;
-    }
-    $('calc').onclick=calc;
-    $('recalc').onclick=()=>{$('resultWrap').classList.add('hidden');document.querySelector('#tool').scrollIntoView({behavior:'smooth'});}
-  </script>
+/* Sozialversicherung (vereinfacht, AN-Anteil) */
+function sv(g,zusatz,isChildless,state){
+  const kv=g*(0.073 + (zusatz/100)/2), rv=g*0.093, av=g*0.013;
+  let pv=g*(isChildless?0.023:0.017); if(state==="Sachsen") pv+=g*0.0035;
+  return {t:kv+rv+av+pv,kv,rv,av,pv};
+}
+/* Lohnsteuer (vereinfachte Klassen-Schätzung) */
+function tax(taxable,klass,children){
+  const base={1:.16,2:.15,3:.08,4:.16,5:.24,6:.30}[+klass] ?? .16;
+  const relief=Math.min(.02,.01*(+children||0));
+  const rate=Math.max(0,base-relief);
+  return {a:taxable*rate,r:rate};
+}
+
+function calculate(){
+  const h=+$('hourly').value||0, hs=+$('hoursActual').value||0, nh=+$('nightHours').value||0,
+        permanent=$('permanent').checked, state=$('state').value, klass=$('taxClass').value,
+        zusatz=+$('health').value||1.6, kids=+$('children').value||0, childless=$('childless').value==='yes', churchOn=$('church').checked;
+
+  const base=h*HOURS;
+  const extra=Math.max(0,hs-HOURS); const azk=extra*h;
+  const fraction=permanent?1:(hs?clamp(nh/hs,0,1):0);
+  const night=base*0.25*fraction;
+
+  const gross=base+night;
+  const S=sv(gross,zusatz,childless,state);
+  const taxable=Math.max(0,gross-S.t);
+  const T=tax(taxable,klass,kids);
+  const cp=churchOn?churchPct(state):0;
+  const church=T.a*(cp/100);
+
+  const deductions=S.t+T.a+church;
+  const net=Math.max(0,gross-deductions);
+  const pct=gross?Math.round(net/gross*100):0;
+
+  /* Ausgabe */
+  $('resultWrap').classList.remove('hidden');
+  $('netOut').textContent=euro(net);
+  $('barfill').style.width=pct+'%';
+
+  $('details').innerHTML=`
+    <div>Stundenlohn × 151,67 Std: <b style="float:right">${euro(base)}</b></div>
+    <div>Nachtzuschlag (25% · ${permanent?'Dauernacht':(fraction*100).toFixed(0)+'%' }):
+      <b style="float:right">+ ${euro(night)}</b></div>
+    <div>AZK-Zuwachs: <b style="float:right">+ ${extra.toFixed(2)} Std (${euro(azk)})</b></div>
+    <hr style="border:none;border-top:1px solid #e6eff4;margin:10px 0">
+    <div>Sozialabgaben ges.: <b style="float:right">− ${euro(S.t)}</b></div>
+    <div>— KV / RV / AV / PV: <b style="float:right">− ${euro(S.kv)} / ${euro(S.rv)} / ${euro(S.av)} / ${euro(S.pv)}</b></div>
+    <div>Lohnsteuer (Kl. ${klass}): <b style="float:right">− ${euro(T.a)}</b></div>
+    <div>Kirchensteuer ${churchOn?'('+cp+'%)':'(aus)'}: <b style="float:right">− ${euro(church)}</b></div>
+  `;
+}
+
+/* Aktionen */
+$('calc').onclick=calculate;
+$('recalc').onclick=()=>{ document.getElementById('resultWrap').classList.add('hidden'); document.getElementById('calcForm').scrollIntoView({behavior:'smooth'}); };
+</script>
 </body>
 </html>
