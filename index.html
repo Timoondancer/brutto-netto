@@ -458,3 +458,48 @@ document.addEventListener('click', (e) => {
 </script>
 </body>
 </html>
+<style id="spacing-fix">
+/* ——— Layout & Spacing Fix (überschreibt vorhandene Regeln) ——— */
+.container .grid-2{display:grid;grid-template-columns:1fr;gap:18px}
+.container .grid-3{display:grid;grid-template-columns:1fr;gap:18px}
+
+/* Eingaben innen komfortabler */
+.container input,
+.container select{padding:14px 16px}
+
+/* Ergebnis-Karte mit mehr Luft unten */
+.container .card.result{padding:24px}
+
+/* Action-Zeile für Buttons – Luft nach oben */
+.container .form-actions{margin-top:24px}
+@media (min-width:1120px){
+  .container .form-actions{margin-top:28px}
+}
+
+/* Desktop: flexible Spalten + größere Gaps */
+@media (min-width:1120px){
+  .container .layout{
+    display:grid;
+    grid-template-columns: minmax(600px,1fr) 500px; /* Ergebnis leicht breiter */
+    gap:32px;
+    align-items:start;
+  }
+  .container .grid-2{grid-template-columns:1fr 1fr; gap:22px}
+
+  /* WICHTIG: 3er-Gitter bricht rechtzeitig um – kein Quetschen */
+  .container .grid-3{
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap:22px;
+  }
+}
+
+/* Extra Ruhe auf sehr breiten Screens (optional) */
+@media (min-width:1400px){
+  .container .layout{
+    grid-template-columns: minmax(640px,1fr) 520px;
+    gap:36px;
+  }
+  .container .grid-3{gap:24px}
+}
+</style>
+
