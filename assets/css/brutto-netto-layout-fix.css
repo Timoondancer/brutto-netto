@@ -1,0 +1,33 @@
+
+/* Brutto-Netto-Rechner Layout & Spacing Fix */
+.grid-2{display:grid;grid-template-columns:1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:1fr;gap:18px}
+
+/* Desktop: flexible Spalten + größere Gaps */
+@media (min-width:1120px){
+  .layout{
+    display:grid;
+    grid-template-columns: minmax(600px, 1fr) 500px;
+    gap:32px;
+    align-items:start;
+  }
+  .sticky{position:sticky;top:24px}
+  .grid-2{grid-template-columns:1fr 1fr; gap:22px}
+  .grid-3{grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:22px;}
+}
+
+/* Formular-Action-Zeile */
+.form-actions{margin-top:24px;}
+@media (min-width:1120px){.form-actions{margin-top:28px;}}
+
+/* Eingabefelder */
+input,select{padding:14px 16px;}
+
+/* Ergebnis-Karte */
+.card.result{padding:24px}
+
+/* Optional: Extra-Luft auf großen Screens */
+@media (min-width:1400px){
+  .layout{grid-template-columns: minmax(640px, 1fr) 520px; gap:36px;}
+  .grid-3{gap:24px;}
+}
