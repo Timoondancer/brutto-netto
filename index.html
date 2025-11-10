@@ -3,12 +3,18 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Brutto-Netto-Rechner für Zeitarbeit (mit AZK & Nachtschicht)</title>
+<title>Brutto-Netto-Rechner für Zeitarbeit (AZK & Nachtschicht)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet" />
 <style>
-:root{--tp-blue:#0b2d42;--tp-green:#b6de36;--tp-bg:#edf2f0;--tp-muted:#6f8a9b;--radius:14px}
+:root{
+  --tp-blue:#0b2d42;
+  --tp-green:#b6de36;
+  --tp-bg:#edf2f0;
+  --tp-muted:#6f8a9b;
+  --radius:14px;
+}
 body{margin:0;font:400 16px/1.6 "Nunito Sans",sans-serif;color:var(--tp-blue);
 background:var(--tp-bg) url("assets/img/hintergrund.png") center/cover fixed}
 .container{max-width:1200px;margin:32px auto;padding:0 20px}
@@ -25,6 +31,9 @@ input:focus,select:focus{border-color:var(--tp-green)}
 .btn{padding:15px 18px;font:700 16px "Nunito Sans";border-radius:var(--radius);
 border:2px solid var(--tp-green);cursor:pointer}
 .btn-primary{background:var(--tp-blue);color:#fff}
+.btn-primary:hover{box-shadow:0 8px 18px rgba(11,45,66,.35)}
+.btn-secondary{background:#fff;color:var(--tp-blue)}
+.btn-secondary:hover{background:rgba(182,222,54,.12)}
 .form-actions{margin-top:24px}
 @media(min-width:1120px){
 .layout{display:grid;grid-template-columns:minmax(600px,1fr) 500px;gap:32px}
@@ -59,26 +68,26 @@ max-height:360px;overflow:auto;display:none;z-index:9999}
 <section class="card panel">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px">
     <h2 style="margin:0">Eingaben</h2>
-    <button id="backBtn" class="btn" type="button">Zurück</button>
+    <button id="backBtn" class="btn btn-secondary" type="button">Zurück</button>
   </div>
   <form id="calcForm" novalidate>
     <fieldset><legend>Basis</legend>
       <div class="grid-2">
-        <div><label for="hourly">Stundenlohn</label><input id="hourly" type="number" value="15"></div>
-        <div><label for="hoursActual">Gesamtstunden</label><input id="hoursActual" type="number" value="160"></div>
+        <div><label for="hourly">Stundenlohn (EUR/Std)</label><input id="hourly" type="number" value="15"></div>
+        <div><label for="hoursActual">Gesamtstunden (Monat)</label><input id="hoursActual" type="number" value="160"></div>
       </div>
     </fieldset>
     <fieldset><legend>Nachtschicht</legend>
       <div class="grid-2">
-        <div class="switch"><input id="permanent" type="checkbox"><label for="permanent">Dauernacht</label></div>
-        <div id="nightBox"><label for="nightHours">Nachtstunden</label><input id="nightHours" type="number" value="20"></div>
+        <div class="switch"><input id="permanent" type="checkbox"><label for="permanent">Dauernachtschicht</label></div>
+        <div id="nightBox"><label for="nightHours">Nachtstunden (Monat)</label><input id="nightHours" type="number" value="20"></div>
       </div>
     </fieldset>
     <fieldset><legend>Steuern & Sozialversicherung</legend>
       <div class="grid-3">
         <div><label for="state">Bundesland</label><select id="state"><option>NRW</option><option>Bayern</option><option>Berlin</option></select></div>
-        <div><label for="taxClass">Steuerklasse</label><select id="taxClass"><option>I</option><option>II</option><option selected>III</option></select></div>
-        <div><label for="health">Krankenkasse (%)</label><input id="health" type="number" step="0.1" value="1.7"></div>
+        <div><label for="taxClass">Steuerklasse</label><select id="taxClass"><option>I</option><option>II</option><option selected>III</option><option>IV</option><option>V</option><option>VI</option></select></div>
+        <div><label for="health">Krankenkasse – Zusatzbeitrag (%)</label><input id="health" type="number" step="0.1" value="1.7"></div>
       </div>
     </fieldset>
     <div class="form-actions"><button id="calc" type="button" class="btn btn-primary">Netto berechnen</button></div>
