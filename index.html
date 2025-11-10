@@ -12,7 +12,7 @@
 <style>
 :root{
   --tp-blue:#0b2d42;        /* Primary Navy */
-  --tp-blue-2:#123a57;      /* Hero Navy */
+  --tp-blue-2:#123a57;      /* Hero/Panel Navy */
   --tp-green:#b6de36;       /* Accent */
   --tp-bg:#edf2f0;          /* Page BG */
   --tp-muted:#6f8a9b;       /* Muted text */
@@ -23,10 +23,10 @@
 *{box-sizing:border-box}
 html,body{margin:0;font:400 16px/1.6 "Nunito Sans",system-ui,sans-serif;color:#0b2d42}
 body{
-  background:var(--tp-bg) url("assets/img/hintergrund.png") center/cover fixed; /* PNG Background */
+  background:var(--tp-bg) url("assets/img/hintergrund.png") center/cover fixed;
   position:relative;
 }
-body::before{ /* leicht abdunkeln für bessere Lesbarkeit */
+body::before{
   content:""; position:fixed; inset:0; z-index:-1;
   background:rgba(6,22,33,.28);
 }
@@ -51,7 +51,7 @@ label{display:block;font-weight:700;margin:0 0 6px;color:var(--tp-blue)}
 
 input,select{
   width:100%; padding:12px 14px; border-radius:var(--radius);
-  background:#fff; color:var(--tp-blue);
+  background:#fff; color:#0b2d42;
   border:2px solid #c9d3da; outline:none;
   transition:border-color .15s ease, box-shadow .15s ease;
 }
@@ -62,7 +62,7 @@ input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(
 .grid-2{display:grid;grid-template-columns:1fr;gap:14px}
 .grid-3{display:grid;grid-template-columns:1fr;gap:14px}
 
-/* Buttons – ohne „pressed“-Persistenz */
+/* Buttons */
 .btn{
   appearance:none; display:inline-flex; align-items:center; justify-content:center; gap:10px;
   padding:15px 18px; font:700 16px/1 "Nunito Sans";
@@ -73,11 +73,11 @@ input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(
 .btn:active{transform:translateY(1px)}
 .btn-primary{background:var(--tp-blue); color:#fff}
 .btn-primary:hover{box-shadow:0 8px 18px rgba(11,45,66,.35)}
-.btn-secondary{background:transparent; color:var(--tp-blue)}
+.btn-secondary{background:transparent; color:#0b2d42}
 .btn-secondary:hover{background:rgba(182,222,54,.12)}
 @media (max-width:640px){.btn{width:100%}}
 
-/* Toggle – flach & grün */
+/* Toggle */
 .switch{display:inline-grid;grid-auto-flow:column;align-items:center;gap:12px}
 .switch input{
   appearance:none; width:44px; height:20px; border-radius:10px;
@@ -98,18 +98,18 @@ input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(
 .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--tp-green),#d5f16a);width:0%}
 .note{font-size:12px;color:#4c5f6b}
 
-/* Details „tabellarisch“ & luftiger */
-#details > div{
+/* Detailzeilen sauber */
+#details .row{
   display:grid;
   grid-template-columns: 1fr auto;
   align-items:center;
   gap:14px;
-  padding:8px 0;
+  padding:10px 0;
   border-bottom:1px solid #e9eef1;
 }
-#details > div:last-child{border-bottom:0}
+#details .row:last-child{border-bottom:0}
 
-/* Desktop: mehr Luft & breiteres Ergebnis */
+/* Desktop: Luft & Spaltenbreite */
 @media (min-width:1120px){
   .layout{
     display:grid;
@@ -119,27 +119,28 @@ input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(
   }
   .sticky{position:sticky;top:24px}
   .grid-2{grid-template-columns:1fr 1fr}
-  .grid-3{grid-template-columns:repeat(3,1fr)}
+  /* wichtige Zeile: feste Minbreiten -> kein Quetschen */
+  .grid-3{grid-template-columns:repeat(3, minmax(220px,1fr))}
 }
 
-/* --- Autocomplete (Beruf) --- */
+/* Autocomplete (Beruf) */
 .autocomplete{ position:relative }
 .suggestions{
   position:absolute; left:0; right:0; top:calc(100% + 6px);
   background:#fff; border:1px solid #dfe6ea; border-radius:12px;
-  box-shadow:0 10px 24px rgba(11,45,66,.12);
+  box-shadow:0 14px 28px rgba(11,45,66,.14);
   max-height:360px; overflow:auto; padding:6px 0; margin:0;
-  display:none; z-index:20;
+  display:none; z-index:9999;
 }
 .suggestions.show{ display:block }
 .suggestions li{
   list-style:none; padding:10px 14px; cursor:pointer;
-  font-size:15px; color:#0b2d42;
+  font-size:15px; color:#0b2d42; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .suggestions li + li{ border-top:1px solid #f2f5f7 }
 .suggestions li:hover,
 .suggestions li[aria-selected="true"]{
-  background:#f3f8e9; /* leichtes Grün */
+  background:#f3f8e9;
 }
 
 /* Utilities */
@@ -161,12 +162,10 @@ input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(
       <h2>Los geht’s – dein Beruf</h2>
       <label for="job">Beruf / Tätigkeit</label>
       <div class="autocomplete">
-        <input id="job" type="text" autocomplete="off"
-               placeholder="Tippe mind. 4 Zeichen, z. B. 'Lage'">
-        <ul id="jobSuggest" class="suggestions" role="listbox"
-            aria-label="Berufsvorschläge"></ul>
+        <input id="job" type="text" autocomplete="off" placeholder="Tippe mind. 4 Zeichen, z. B. 'Lage'">
+        <ul id="jobSuggest" class="suggestions" role="listbox" aria-label="Berufsvorschläge"></ul>
       </div>
-      <p class="hint">Mindestens 4 Zeichen eingeben – max. 34 Vorschläge (oder frei tippen).</p>
+      <p class="hint">Mindestens 4 Zeichen eingeben – max. 34 Vorschläge. (Du kannst auch frei eingeben.)</p>
       <div style="margin-top:12px"><button id="startBtn" class="btn btn-secondary" type="button">Rechner starten</button></div>
     </section>
 
@@ -174,7 +173,11 @@ input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(
     <section id="tool" class="layout hidden" aria-label="Brutto-Netto-Rechner">
       <!-- FORM -->
       <section class="card panel">
-        <h2>Eingaben</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px">
+          <h2 style="margin:0">Eingaben</h2>
+          <button id="backBtn" class="btn btn-secondary" type="button">Zurück</button>
+        </div>
+
         <form id="calcForm" novalidate>
           <fieldset>
             <legend>Basis</legend>
@@ -234,8 +237,8 @@ input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(
               </div>
               <div>
                 <label for="health">Krankenkasse – Zusatzbeitrag (%)</label>
-                <input id="health" type="number" step="0.1" value="1.6" />
-                <div class="hint">AN-KV ≈ 7,3&nbsp;% + (Zusatz/2).</div>
+                <input id="health" type="number" step="0.1" value="1.7" />
+                <div class="hint">Typisch ~1,7&nbsp;% (AN-Anteil = 7,3&nbsp;% + Zusatz/2).</div>
               </div>
             </div>
 
@@ -279,20 +282,31 @@ input:focus,select:focus{border-color:var(--tp-green);box-shadow:0 0 0 3px rgba(
   </main>
 
 <script>
+/* helpers */
 const $=id=>document.getElementById(id);
 const HOURS=151.67;
 const euro=n=>new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(n);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const churchPct=s=>(s==="Bayern"||s==="Baden-Württemberg")?8:9;
 
-/* Start: Intro -> Tool */
-$('startBtn').onclick=()=>{const j=$('job').value.trim(); if(!j){$('job').focus();return;}
-  localStorage.tp_job=j; document.getElementById('intro').classList.add('hidden'); document.getElementById('tool').classList.remove('hidden'); $('hourly').focus();
+/* Navigation Intro <-> Tool */
+$('startBtn').onclick=()=>{
+  const j=$('job').value.trim();
+  if(!j){$('job').focus();return;}
+  localStorage.tp_job=j;
+  $('intro').classList.add('hidden');
+  $('tool').classList.remove('hidden');
+  $('hourly').focus();
+};
+$('backBtn').onclick=()=>{
+  $('tool').classList.add('hidden');
+  $('intro').classList.remove('hidden');
+  $('job').focus();
 };
 
 /* UX-Logik */
-$('permanent').onchange=e=>{ document.getElementById('nightBox').classList.toggle('hidden',e.target.checked); };
-$('childless').addEventListener('change',e=>{ document.getElementById('childrenWrapper').style.display = e.target.value==='no' ? 'block' : 'none'; });
+$('permanent').onchange=e=>{ $('nightBox').classList.toggle('hidden',e.target.checked); };
+$('childless').addEventListener('change',e=>{ $('childrenWrapper').style.display = e.target.value==='no' ? 'block' : 'none'; });
 
 /* Sozialversicherung (vereinfacht, AN-Anteil) */
 function sv(g,zusatz,isChildless,state){
@@ -308,10 +322,11 @@ function tax(taxable,klass,children){
   return {a:taxable*rate,r:rate};
 }
 
+/* Berechnung */
 function calculate(){
   const h=+$('hourly').value||0, hs=+$('hoursActual').value||0, nh=+$('nightHours').value||0,
         permanent=$('permanent').checked, state=$('state').value, klass=$('taxClass').value,
-        zusatz=+$('health').value||1.6, kids=+$('children').value||0, childless=$('childless').value==='yes', churchOn=$('church').checked;
+        zusatz=+$('health').value||1.7, kids=+$('children').value||0, childless=$('childless').value==='yes', churchOn=$('church').checked;
 
   const base=h*HOURS;
   const extra=Math.max(0,hs-HOURS); const azk=extra*h;
@@ -329,25 +344,26 @@ function calculate(){
   const net=Math.max(0,gross-deductions);
   const pct=gross?Math.round(net/gross*100):0;
 
-  /* Ausgabe */
   $('resultWrap').classList.remove('hidden');
   $('netOut').textContent=euro(net);
   $('barfill').style.width=pct+'%';
 
+  /* Detailzeilen – sauber je Position */
   $('details').innerHTML=`
-    <div>Stundenlohn × 151,67 Std <b>${euro(base)}</b></div>
-    <div>Nachtzuschlag (25% · ${permanent?'Dauernacht':(fraction*100).toFixed(0)+'%'} ) <b>+ ${euro(night)}</b></div>
-    <div>AZK-Zuwachs <b>+ ${extra.toFixed(2)} Std (${euro(azk)})</b></div>
-    <div>Sozialabgaben ges. <b>− ${euro(S.t)}</b></div>
-    <div>— KV / RV / AV / PV <b>− ${euro(S.kv)} / ${euro(S.rv)} / ${euro(S.av)} / ${euro(S.pv)}</b></div>
-    <div>Lohnsteuer (Kl. ${klass}) <b>− ${euro(T.a)}</b></div>
-    <div>Kirchensteuer ${churchOn?'('+cp+'%)':'(aus)'} <b>− ${euro(church)}</b></div>
+    <div class="row"><div>Stundenlohn × 151,67 Std</div><div><b>${euro(base)}</b></div></div>
+    <div class="row"><div>Nachtzuschlag (25% · ${permanent?'Dauernacht':(fraction*100).toFixed(0)+'%'})</div><div><b>+ ${euro(night)}</b></div></div>
+    <div class="row"><div>AZK-Zuwachs</div><div><b>+ ${extra.toFixed(2)} Std (${euro(azk)})</b></div></div>
+    <div class="row"><div>Sozialabgaben ges.</div><div><b>− ${euro(S.t)}</b></div></div>
+    <div class="row"><div>— KV (inkl. Zusatz/2)</div><div><b>− ${euro(S.kv)}</b></div></div>
+    <div class="row"><div>— RV</div><div><b>− ${euro(S.rv)}</b></div></div>
+    <div class="row"><div>— AV</div><div><b>− ${euro(S.av)}</b></div></div>
+    <div class="row"><div>— PV ${state==='Sachsen'?'(+0,35 % Sachsen)':''}</div><div><b>− ${euro(S.pv)}</b></div></div>
+    <div class="row"><div>Lohnsteuer (Kl. ${klass})</div><div><b>− ${euro(T.a)}</b></div></div>
+    <div class="row"><div>Kirchensteuer ${churchOn?'('+cp+'%)':'(aus)'}</div><div><b>− ${euro(church)}</b></div></div>
   `;
 }
-
-/* Aktionen */
 $('calc').onclick=calculate;
-$('recalc').onclick=()=>{ document.getElementById('resultWrap').classList.add('hidden'); document.getElementById('calcForm').scrollIntoView({behavior:'smooth'}); };
+$('recalc').onclick=()=>{ $('resultWrap').classList.add('hidden'); $('calcForm').scrollIntoView({behavior:'smooth'}); };
 
 /* ===== Jobtitel-Autocomplete aus CSV ===== */
 const JOBS = [];
@@ -355,9 +371,18 @@ const MAX_SUG = 34;
 const jobInput = document.getElementById('job');
 const sugList  = document.getElementById('jobSuggest');
 
+/* Fallback-Liste, falls CSV nicht erreichbar ist */
+const JOB_FALLBACK = [
+  "Lagerhelfer","Produktionsmitarbeiter","Pflegekraft","Staplerfahrer",
+  "Kommissionierer","Küchenhilfe","Koch","Call-Center-Agent",
+  "Schweißer","Elektriker","Bürokaufmann","Bürokauffrau","Reinigungskraft"
+];
+
+const debounce=(fn,ms)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);}};
+
 function norm(s){
   return (s||'').toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,''); // Diakritika entfernen
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 }
 function renderSuggestions(items){
   if(!items.length){ sugList.classList.remove('show'); sugList.innerHTML=''; return; }
@@ -369,24 +394,26 @@ function renderSuggestions(items){
 function filterJobs(q){
   const n = norm(q);
   if(n.length < 4) return [];
-  return JOBS.filter(t => norm(t).includes(n)).slice(0, MAX_SUG);
+  /* startsWith bevorzugen, dann contains */
+  const starts = JOBS.filter(t=>norm(t).startsWith(n));
+  const rest   = JOBS.filter(t=>!norm(t).startsWith(n) && norm(t).includes(n));
+  return [...starts, ...rest].slice(0, MAX_SUG);
 }
 let activeIndex = -1;
 
-jobInput.addEventListener('input', () => {
+jobInput.addEventListener('input', debounce(()=>{
   const q = jobInput.value.trim();
   renderSuggestions(filterJobs(q));
-});
+},120));
+
 jobInput.addEventListener('keydown', (e) => {
   const items = [...sugList.querySelectorAll('li')];
   if(!sugList.classList.contains('show') || !items.length) return;
 
   if(e.key === 'ArrowDown'){
-    e.preventDefault();
-    activeIndex = (activeIndex + 1) % items.length;
+    e.preventDefault(); activeIndex = (activeIndex + 1) % items.length;
   } else if(e.key === 'ArrowUp'){
-    e.preventDefault();
-    activeIndex = (activeIndex - 1 + items.length) % items.length;
+    e.preventDefault(); activeIndex = (activeIndex - 1 + items.length) % items.length;
   } else if(e.key === 'Enter'){
     if(activeIndex >= 0){
       e.preventDefault();
@@ -410,6 +437,8 @@ document.addEventListener('click', (e) => {
     sugList.classList.remove('show');
   }
 });
+
+/* CSV laden */
 (async function loadJobs(){
   try{
     const res = await fetch('assets/data/jobtitel.csv', {cache:'no-store'});
@@ -420,7 +449,8 @@ document.addEventListener('click', (e) => {
     uniq.sort((a,b)=>a.localeCompare(b,'de',{sensitivity:'base'}));
     JOBS.push(...uniq);
   }catch(err){
-    console.warn('Jobtitel-CSV konnte nicht geladen werden:', err);
+    console.warn('Jobtitel-CSV konnte nicht geladen werden – nutze Fallback:', err);
+    JOBS.push(...JOB_FALLBACK);
   }
 })();
 </script>
