@@ -159,28 +159,35 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
           <div class="grid-2">
             <div>
               <label for="hourly">Stundenlohn (EUR/Std)</label>
-              <input id="hourly" type="number" step="0.01" min="0" value="15" />
-              <div class="hint">Monatsbrutto basiert auf 151,67 Std.</div>
+              <input id="hourly" type="number" step="0.01" min="0" placeholder="z. B. 15,00" />
+              <div class="hint">Dein Monatsbrutto wird auf deinen tatsächlichen Stunden berechnet. Das AZK basiert auf 151,67 Std.</div>
             </div>
             <div>
               <label for="hoursActual">Gesamtstunden (Monat)</label>
-              <input id="hoursActual" type="number" step="0.01" min="0" value="160" />
-              <div class="hint">Alles über 151,67 Std geht ins AZK.</div>
+              <input id="hoursActual" type="number" step="0.01" min="0" placeholder="z. B. 160" />
+              <div class="hint">Alles über 151,67 Std fließt als Zeitguthaben ins AZK.</div>
             </div>
           </div>
         </fieldset>
 
         <fieldset>
-          <legend>Nachtschicht</legend>
+          <legend>Schicht &amp; Nachtarbeit</legend>
           <div class="grid-2">
-            <div class="switch">
-              <input id="permanent" type="checkbox" />
-              <label for="permanent">Dauernachtschicht (100 % Nachtstunden)</label>
+            <div>
+              <label for="shift">Schichtmodell</label>
+              <select id="shift">
+                <option value="" disabled selected>Bitte wählen…</option>
+                <option value="konti">Kontischicht</option>
+                <option value="3schicht">3-Schicht</option>
+                <option value="dauernacht">Dauernachtschicht (100 % Nachtstunden)</option>
+                <option value="keine">Keine Nachtschicht enthalten</option>
+              </select>
+              <div class="hint">Nachtschichtzuschlag: 25 % auf den entsprechenden Stundenanteil.</div>
             </div>
             <div id="nightBox">
               <label for="nightHours">Nachtstunden (Monat)</label>
-              <input id="nightHours" type="number" step="0.01" min="0" value="20" />
-              <div class="hint">Bei „Dauernacht“ nicht erforderlich.</div>
+              <input id="nightHours" type="number" step="0.01" min="0" placeholder="z. B. 20" />
+              <div class="hint">Bei Dauernachtschicht oder „Keine Nachtschicht“ wird dieses Feld nicht benötigt.</div>
             </div>
           </div>
         </fieldset>
@@ -191,9 +198,10 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
             <div>
               <label for="state">Bundesland</label>
               <select id="state">
+                <option value="" disabled selected>Bitte wählen…</option>
                 <option>Baden-Württemberg</option><option>Bayern</option><option>Berlin</option><option>Brandenburg</option>
                 <option>Bremen</option><option>Hamburg</option><option>Hessen</option><option>Mecklenburg-Vorpommern</option>
-                <option>Niedersachsen</option><option selected>Nordrhein-Westfalen</option><option>Rheinland-Pfalz</option>
+                <option>Niedersachsen</option><option>Nordrhein-Westfalen</option><option>Rheinland-Pfalz</option>
                 <option>Saarland</option><option>Sachsen</option><option>Sachsen-Anhalt</option>
                 <option>Schleswig-Holstein</option><option>Thüringen</option>
               </select>
@@ -206,7 +214,8 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
             <div>
               <label for="taxClass">Steuerklasse</label>
               <select id="taxClass">
-                <option value="1">I</option><option value="2">II</option><option value="3" selected>III</option>
+                <option value="" disabled selected>Bitte wählen…</option>
+                <option value="1">I</option><option value="2">II</option><option value="3">III</option>
                 <option value="4">IV</option><option value="5">V</option><option value="6">VI</option>
               </select>
               <div class="hint">III niedrig, V hoch, I/IV mittel, II etwas günstiger, VI sehr hoch.</div>
@@ -214,8 +223,8 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
 
             <div>
               <label for="health">Krankenkasse – Zusatzbeitrag (%)</label>
-              <input id="health" type="number" step="0.1" value="1.7" />
-              <div class="hint">Typisch ~1,7 % (AN-Anteil = 7,3 % + Zusatz/2).</div>
+              <input id="health" type="number" step="0.1" min="0" placeholder="z. B. 2,18" />
+              <div class="hint">Viele Kassen liegen 2025 zwischen ca. 2,18 % und 4,40 % Zusatzbeitrag (AN-Anteil = 7,3 % + Zusatz/2).</div>
             </div>
           </div>
 
@@ -223,13 +232,14 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
             <div>
               <label for="childless">Kinder vorhanden?</label>
               <select id="childless">
-                <option value="no" selected>ja (mit Kind)</option>
+                <option value="" disabled selected>Bitte wählen…</option>
+                <option value="no">ja (mit Kind)</option>
                 <option value="yes">nein (kinderlos)</option>
               </select>
             </div>
-            <div id="childrenWrapper">
+            <div id="childrenWrapper" class="hidden">
               <label for="children">Kinder (Anzahl)</label>
-              <input id="children" type="number" min="0" step="1" value="0" />
+              <input id="children" type="number" min="0" step="1" />
             </div>
           </div>
         </fieldset>
@@ -284,8 +294,19 @@ $('backBtn').onclick = () => {
 };
 
 /* UX: Felder ein-/ausblenden */
-$('permanent').onchange = (e)=>{ $('nightBox').classList.toggle('hidden', e.target.checked); };
-$('childless').addEventListener('change', (e)=>{ $('childrenWrapper').style.display = e.target.value==='no' ? 'block' : 'none'; });
+$('shift').addEventListener('change', (e) => {
+  const v = e.target.value;
+  if (v === 'konti' || v === '3schicht') {
+    $('nightBox').classList.remove('hidden');
+  } else {
+    $('nightBox').classList.add('hidden');
+    $('nightHours').value = "";
+  }
+});
+
+$('childless').addEventListener('change', (e)=>{ 
+  $('childrenWrapper').classList.toggle('hidden', e.target.value !== 'no');
+});
 
 /* ========== Sozialabgaben (vereinfacht, AN-Anteil) ========== */
 function sv(gross, zusatz, isChildless, state){
@@ -305,25 +326,47 @@ function tax(taxable, klass, children){
   return {a: taxable*rate, r: rate};
 }
 
-/* ========== Berechnung ========== */
+/* ========== Berechnung nach deinem Modell ========== */
+/*
+   - Brutto-Grundlohn: Stundenlohn × tatsächlich geleistete Stunden (z.B. 160)
+   - Nachtzuschlag:   25 % auf den entsprechenden Stundenanteil
+   - AZK:             alle Stunden > 151,67 als Zeitguthaben (Info), nicht im Netto
+*/
 function calculate(){
-  const h=+$('hourly').value||0,
-        hs=+$('hoursActual').value||0,
-        nh=+$('nightHours').value||0,
-        permanent=$('permanent').checked,
-        state=$('state').value,
-        klass=$('taxClass').value,
-        zusatz=+$('health').value||1.7,
-        kids=+$('children').value||0,
-        childless=$('childless').value==='yes',
-        churchOn=$('church').checked;
+  const h = +$('hourly').value || 0;
+  const hs = +$('hoursActual').value || 0;
+  const nh = +$('nightHours').value || 0;
+  const shift = $('shift').value;
+  const state = $('state').value;
+  const klass = $('taxClass').value;
+  const zusatz = +$('health').value || 0;
+  const kids = +$('children').value || 0;
+  const childless = $('childless').value === 'yes';
+  const churchOn = $('church').checked;
 
-  const base = h*HOURS;
-  const extra = Math.max(0, hs-HOURS);
-  const azk = extra*h;
+  if (!h || !hs || !shift || !state || !klass || !zusatz || !$('childless').value) {
+    alert("Bitte fülle alle Pflichtfelder aus (Stundenlohn, Stunden, Schichtmodell, Bundesland, Steuerklasse, Krankenkasse, Kinderangabe).");
+    return;
+  }
 
-  const fraction = permanent ? 1 : (hs ? clamp(nh/hs,0,1) : 0);
-  const night = base*0.25*fraction;
+  /* Grundlohn auf allen tatsächlich geleisteten Stunden */
+  const base = h * hs;
+
+  /* AZK: rein informativ, auf Stunden > 151,67 */
+  const extraHours = Math.max(0, hs - HOURS);
+  const azkValue = extraHours * h;
+
+  /* Anteil der Nachtstunden je nach Schichtmodell */
+  let fraction = 0;
+  if (shift === 'dauernacht') {
+    fraction = 1; // 100 % der Stunden sind Nacht
+  } else if (shift === 'konti' || shift === '3schicht') {
+    fraction = hs ? clamp(nh / hs, 0, 1) : 0;
+  } else {
+    fraction = 0; // keine Nachtschicht
+  }
+
+  const night = base * 0.25 * fraction;
 
   const gross = base + night;
   const S = sv(gross, zusatz, childless, state);
@@ -339,10 +382,17 @@ function calculate(){
   $('netOut').textContent = euro(net);
   $('barfill').style.width = pct + '%';
 
+  const fractionText =
+    shift === 'dauernacht'
+      ? 'Dauernachtschicht (100 %)'
+      : (shift === 'keine'
+          ? 'Keine Nachtschicht'
+          : (fraction*100).toFixed(0) + ' % der Stunden');
+
   $('details').innerHTML = `
-    <div class="row"><div>Stundenlohn × 151,67 Std</div><div><b>${euro(base)}</b></div></div>
-    <div class="row"><div>Nachtzuschlag (25 % · ${permanent?'Dauernacht':(fraction*100).toFixed(0)+'%'})</div><div><b>+ ${euro(night)}</b></div></div>
-    <div class="row"><div>AZK-Zuwachs</div><div><b>+ ${extra.toFixed(2)} Std (${euro(azk)})</b></div></div>
+    <div class="row"><div>Grundlohn (${hs.toFixed(2)} Std × Stundenlohn)</div><div><b>${euro(base)}</b></div></div>
+    <div class="row"><div>Nachtzuschlag (25 % · ${fractionText})</div><div><b>+ ${euro(night)}</b></div></div>
+    <div class="row"><div>AZK-Zuwachs (nur Info)</div><div><b>+ ${extraHours.toFixed(2)} Std (${euro(azkValue)})</b></div></div>
     <div class="row"><div>Sozialabgaben ges.</div><div><b>− ${euro(S.t)}</b></div></div>
     <div class="row"><div>— KV (inkl. Zusatz/2)</div><div><b>− ${euro(S.kv)}</b></div></div>
     <div class="row"><div>— RV</div><div><b>− ${euro(S.rv)}</b></div></div>
@@ -353,7 +403,10 @@ function calculate(){
   `;
 }
 $('calc').onclick = calculate;
-$('recalc').onclick = ()=>{ $('resultWrap').classList.add('hidden'); $('calcForm').scrollIntoView({behavior:'smooth'}); };
+$('recalc').onclick = ()=>{ 
+  $('resultWrap').classList.add('hidden'); 
+  $('calcForm').scrollIntoView({behavior:'smooth'}); 
+};
 
 /* ========== Autocomplete (CSV + Fallback) ========== */
 const JOBS = [];
