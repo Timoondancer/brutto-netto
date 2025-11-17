@@ -106,13 +106,26 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
 
 /* Desktop */
 @media (min-width:1120px){
-  .layout{display:grid;grid-template-columns:minmax(620px,1fr) 500px;gap:28px;align-items:start}
+  .layout{
+    display:grid;
+    grid-template-columns:minmax(620px,1fr) minmax(380px,460px);
+    gap:28px;
+    align-items:start;
+  }
   .sticky{position:sticky;top:24px}
   .grid-2{grid-template-columns:1fr 1fr;gap:20px}
   .grid-3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  #resultWrap{
+    max-width:460px;
+    width:100%;
+    justify-self:end;
+  }
 }
 @media (min-width:1400px){
-  .layout{grid-template-columns:minmax(660px,1fr) 520px;gap:32px}
+  .layout{
+    grid-template-columns:minmax(660px,1fr) minmax(400px,480px);
+    gap:32px;
+  }
 }
 
 /* Utility */
@@ -127,7 +140,7 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
     <div class="hero-inner">
       <h1>Brutto-Netto-Rechner für Zeitarbeit</h1>
       <ul class="hero-bullets">
-        <li>Schnell zum Netto</li><li>AZK transparent</li><li>Einfach & mobil</li>
+        <li>Schnell zum Netto</li><li>AZK transparent</li><li>Einfach &amp; mobil</li>
       </ul>
     </div>
   </section>
@@ -137,11 +150,13 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
     <h2>Los geht’s – dein Beruf</h2>
     <label for="job">Beruf / Tätigkeit</label>
     <div class="autocomplete">
-      <input id="job" type="text" autocomplete="off" placeholder="Tippe mind. 4 Zeichen, z. B. Lager…">
+      <input id="job" type="text" autocomplete="off" placeholder="Tippe mind. 4 Zeichen, z. B. Lager…" />
       <ul id="jobSuggest" class="suggestions" role="listbox" aria-label="Berufsvorschläge"></ul>
     </div>
     <p class="hint">Mindestens 4 Zeichen – bis zu 34 Vorschläge. Du kannst auch frei eingeben.</p>
-    <div class="form-actions"><button id="startBtn" class="btn btn-primary" type="button">Rechner starten</button></div>
+    <div class="form-actions">
+      <button id="startBtn" class="btn btn-primary" type="button">Rechner starten</button>
+    </div>
   </section>
 
   <!-- TOOL -->
@@ -159,7 +174,7 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
           <div class="grid-2">
             <div>
               <label for="hourly">Stundenlohn (EUR/Std)</label>
-              <input id="hourly" type="number" step="0.01" min="0" placeholder="z. B. 15,00" />
+              <input id="hourly" type="number" step="0.01" min="0" placeholder="z. B. 16,00" />
               <div class="hint">Dein Monatsbrutto wird auf deinen tatsächlichen Stunden berechnet. Das AZK basiert auf 151,67 Std.</div>
             </div>
             <div>
@@ -230,6 +245,18 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
 
           <div class="grid-3" style="margin-top:14px">
             <div>
+              <label for="age">Alter</label>
+              <input id="age" type="number" min="16" max="80" placeholder="z. B. 35" />
+              <div class="hint">Wichtig für die Pflegeversicherung (Zuschlag ab 23 Jahren kinderlos).</div>
+            </div>
+
+            <div>
+              <label for="taxDays">Steuertage im Monat</label>
+              <input id="taxDays" type="number" min="1" max="31" placeholder="Standard: 30" />
+              <div class="hint">Relevant bei Teilmonaten (Eintritt/Austritt im Monat).</div>
+            </div>
+
+            <div>
               <label for="childless">Kinder vorhanden?</label>
               <select id="childless">
                 <option value="" disabled selected>Bitte wählen…</option>
@@ -237,6 +264,9 @@ legend{font:900 16px/1.2 "Poppins";margin-bottom:8px}
                 <option value="yes">nein (kinderlos)</option>
               </select>
             </div>
+          </div>
+
+          <div class="grid-3" style="margin-top:14px">
             <div id="childrenWrapper" class="hidden">
               <label for="children">Kinder (Anzahl)</label>
               <input id="children" type="number" min="0" step="1" />
@@ -309,12 +339,20 @@ $('childless').addEventListener('change', (e)=>{
 });
 
 /* ========== Sozialabgaben (vereinfacht, AN-Anteil) ========== */
-function sv(gross, zusatz, isChildless, state){
+function sv(gross, zusatz, isChildless, state, age){
   const kv = gross*(0.073 + (zusatz/100)/2);
   const rv = gross*0.093;
   const av = gross*0.013;
-  let pv = gross*(isChildless?0.023:0.017);
-  if(state==="Sachsen") pv += gross*0.0035;
+
+  // PV: Basis + Zuschlag nur, wenn kinderlos UND mindestens 23 Jahre
+  let pvRate = 0.017; // mit Kind bzw. unter 23
+  if (isChildless && age >= 23) {
+    pvRate = 0.023;   // Zuschlag für Kinderlose
+  }
+
+  let pv = gross*pvRate;
+  if(state === "Sachsen") pv += gross*0.0035;
+
   return {t:kv+rv+av+pv, kv, rv, av, pv};
 }
 
@@ -328,24 +366,31 @@ function tax(taxable, klass, children){
 
 /* ========== Berechnung nach deinem Modell ========== */
 /*
-   - Brutto-Grundlohn: Stundenlohn × tatsächlich geleistete Stunden (z.B. 160)
-   - Nachtzuschlag:   25 % auf den entsprechenden Stundenanteil
-   - AZK:             alle Stunden > 151,67 als Zeitguthaben (Info), nicht im Netto
+   - Grundlohn: Stundenlohn × tatsächlich geleistete Stunden (z.B. 160)
+   - Nachtzuschlag: 25 % auf den entsprechenden Stundenanteil
+   - AZK: alle Stunden > 151,67 als Zeitguthaben (Info), nicht im Netto
 */
 function calculate(){
-  const h = +$('hourly').value || 0;
-  const hs = +$('hoursActual').value || 0;
-  const nh = +$('nightHours').value || 0;
-  const shift = $('shift').value;
-  const state = $('state').value;
-  const klass = $('taxClass').value;
-  const zusatz = +$('health').value || 0;
-  const kids = +$('children').value || 0;
+  const h         = +$('hourly').value || 0;
+  const hs        = +$('hoursActual').value || 0;
+  const nh        = +$('nightHours').value || 0;
+  const shift     = $('shift').value;
+  const state     = $('state').value;
+  const klass     = $('taxClass').value;
+  const zusatz    = +$('health').value || 0;
+  const kids      = +$('children').value || 0;
   const childless = $('childless').value === 'yes';
-  const churchOn = $('church').checked;
+  const churchOn  = $('church').checked;
+  const age       = +$('age').value || 0;
+  const taxDays   = +$('taxDays').value || 30;
 
-  if (!h || !hs || !shift || !state || !klass || !zusatz || !$('childless').value) {
-    alert("Bitte fülle alle Pflichtfelder aus (Stundenlohn, Stunden, Schichtmodell, Bundesland, Steuerklasse, Krankenkasse, Kinderangabe).");
+  // Pflichtfelder prüfen
+  if (!h || !hs || !shift || !state || !klass || !zusatz || !$('childless').value || !age) {
+    alert("Bitte fülle alle Pflichtfelder aus (Stundenlohn, Stunden, Schichtmodell, Bundesland, Steuerklasse, Krankenkasse, Kinderangabe, Alter).");
+    return;
+  }
+  if (taxDays < 1 || taxDays > 31) {
+    alert("Bitte gib die Steuertage im Monat zwischen 1 und 31 an.");
     return;
   }
 
@@ -354,7 +399,7 @@ function calculate(){
 
   /* AZK: rein informativ, auf Stunden > 151,67 */
   const extraHours = Math.max(0, hs - HOURS);
-  const azkValue = extraHours * h;
+  const azkValue   = extraHours * h;
 
   /* Anteil der Nachtstunden je nach Schichtmodell */
   let fraction = 0;
@@ -369,14 +414,25 @@ function calculate(){
   const night = base * 0.25 * fraction;
 
   const gross = base + night;
-  const S = sv(gross, zusatz, childless, state);
+
+  // Sozialabgaben mit Alter für PV
+  const S = sv(gross, zusatz, childless, state, age);
+
+  // zu versteuernder Lohn
   const taxable = Math.max(0, gross - S.t);
-  const T = tax(taxable, klass, kids);
-  const cp = churchOn ? churchPct(state) : 0;
-  const church = T.a*(cp/100);
-  const deductions = S.t + T.a + church;
-  const net = Math.max(0, gross - deductions);
-  const pct = gross ? Math.round(net/gross*100) : 0;
+
+  // Vollmonats-Lohnsteuer
+  const Tfull = tax(taxable, klass, kids);
+
+  // Steuertage-Faktor (vereinfachte Annäherung nach Tagestabelle)
+  const dayFactor = clamp(taxDays / 30, 0, 1);
+  const taxAmount = Tfull.a * dayFactor;
+
+  const cp      = churchOn ? churchPct(state) : 0;
+  const church  = taxAmount * (cp/100);
+  const deductions = S.t + taxAmount + church;
+  const net     = Math.max(0, gross - deductions);
+  const pct     = gross ? Math.round(net/gross*100) : 0;
 
   $('resultWrap').classList.remove('hidden');
   $('netOut').textContent = euro(net);
@@ -398,7 +454,7 @@ function calculate(){
     <div class="row"><div>— RV</div><div><b>− ${euro(S.rv)}</b></div></div>
     <div class="row"><div>— AV</div><div><b>− ${euro(S.av)}</b></div></div>
     <div class="row"><div>— PV ${state==='Sachsen'?'(+0,35 % Sachsen)':''}</div><div><b>− ${euro(S.pv)}</b></div></div>
-    <div class="row"><div>Lohnsteuer (Kl. ${klass})</div><div><b>− ${euro(T.a)}</b></div></div>
+    <div class="row"><div>Lohnsteuer (Kl. ${klass}, ${taxDays} Steuertage)</div><div><b>− ${euro(taxAmount)}</b></div></div>
     <div class="row"><div>Kirchensteuer ${churchOn?'('+cp+' %)':'(aus)'}</div><div><b>− ${euro(church)}</b></div></div>
   `;
 }
@@ -472,6 +528,4 @@ document.addEventListener('click', (e)=>{ if(!sugList.contains(e.target) && e.ta
     JOBS.push(...JOB_FALLBACK);
   }
 })();
-</script>
-</body>
-</html>
+</sc
