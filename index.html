@@ -513,7 +513,9 @@ sugList.addEventListener('click', (e)=>{
   const li = e.target.closest('li'); if(!li) return;
   jobInput.value = li.textContent; sugList.classList.remove('show'); jobInput.focus();
 });
-document.addEventListener('click', (e)=>{ if(!sugList.contains(e.target) && e.target!==jobInput) sugList.classList.remove('show'); });
+document.addEventListener('click', (e)=>{ 
+  if(!sugList.contains(e.target) && e.target!==jobInput) sugList.classList.remove('show'); 
+});
 
 (async function loadJobs(){
   try{
@@ -528,4 +530,6 @@ document.addEventListener('click', (e)=>{ if(!sugList.contains(e.target) && e.ta
     JOBS.push(...JOB_FALLBACK);
   }
 })();
-</sc
+</script>
+</body>
+</html>
